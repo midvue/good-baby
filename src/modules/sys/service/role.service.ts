@@ -5,7 +5,7 @@ import { BaseService } from '../../base/base.service';
 import { MenuService } from './menu.service';
 import { Role } from '../entity/role';
 import { RoleMenu } from '../entity/roleMenu';
-import { httpCode } from '../../../constants/code.constants';
+import { httpCode } from '../../../constants/errorCode';
 import {
   RoleCreateDTO,
   RoleMenuUpDTO,

@@ -16,3 +16,8 @@ export const httpCode = Object.keys(codeMap).reduce((errMap, code) => {
   errMap['CODE_' + code] = Number(code);
   return errMap;
 }, {} as Record<NewKeys, number>);
+
+export enum EnumRespCode {
+  /** 成功 */
+  SUCCESS = 0,
+}
