@@ -37,6 +37,14 @@ export class DictService extends BaseService {
     return { list, count };
   }
 
+  async list(options: Partial<DictDTO>) {
+    const { code } = options || {};
+    const list = await this.dictModel.find({
+      where: { code },
+    });
+    return { list };
+  }
+
   async info(id: number) {
     const info = await this.dictModel.findOne({ where: { id } });
     return info;

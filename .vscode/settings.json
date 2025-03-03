@@ -40,6 +40,7 @@
   "javascript.inlayHints.parameterNames.enabled": "all",
   "cSpell.words": [
     "midwayjs",
-    "tinyint"
+    "tinyint",
+    "typeorm"
   ],
 }

@@ -16,6 +16,6 @@ export class Dict extends BaseEntity {
   @Column({ comment: '名称', length: 32 })
   name: string;
 
-  @Column({ comment: '内容', type: 'json' })
-  content: string;
+  @Column({ comment: '字典内容列表', type: 'json' })
+  list: JSON;
 }

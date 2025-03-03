@@ -11,20 +11,24 @@ import {
 import { ApiOperation } from '@midwayjs/swagger';
 import { Validate } from '@midwayjs/validate';
 import { BaseController } from '../../base/base.controller';
-import { BabyCreateDTO, BabyPageDTO, BabyUpdateDTO } from '../dto/baby.dto';
-import { BabyService } from '../service/baby.service';
+import {
+  FeedRecordCreateDTO,
+  FeedRecordPageDTO,
+  FeedRecordUpdateDTO,
+} from '../dto/feedRecord.dto';
+import { FeedRecordService } from '../service/feedRecord.service';
 
-@Controller('/baby/feed_record', {
+@Controller('/baby/feedRecord', {
   description: '喂养记录',
-  tagName: 'feed_record',
+  tagName: 'feedRecord',
 })
 export class FeedRecordController extends BaseController {
   @Inject()
-  babyService: BabyService;
+  babyService: FeedRecordService;
 
   @Post('/page')
   @ApiOperation({ summary: '分页获取列表' })
-  async page(@Body() userDto: BabyPageDTO) {
+  async page(@Body() userDto: FeedRecordPageDTO) {
     const res = await this.babyService.page(userDto);
     return this.success(res);
   }
@@ -40,7 +44,7 @@ export class FeedRecordController extends BaseController {
   @Post('/create')
   @Validate()
   @ApiOperation({ summary: '添加' })
-  async create(@Body() dto: BabyCreateDTO) {
+  async create(@Body() dto: FeedRecordCreateDTO) {
     const res = await this.babyService.create(dto);
     return this.success(res);
   }
@@ -48,7 +52,7 @@ export class FeedRecordController extends BaseController {
   @Put('/update')
   @Validate()
   @ApiOperation({ summary: '更新' })
-  async update(@Body() user: BabyUpdateDTO) {
+  async update(@Body() user: FeedRecordUpdateDTO) {
     const res = await this.babyService.update(user);
     return this.success(res);
   }

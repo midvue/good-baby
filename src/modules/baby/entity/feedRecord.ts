@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '../../base/base.entity';
 
 /**
@@ -15,9 +15,6 @@ export class FeedRecord extends BaseEntity {
   @Column({ comment: '喂养内容', length: 32 })
   content: string;
 
-  @Column({ comment: '喂养容量', type: 'int' })
-  volume: number;
-
   @Column({ name: 'feed_time', comment: '喂养日期', type: 'timestamp' })
-  feed_time: number;
+  feedTime: number;
 }

@@ -46,7 +46,13 @@ export class JwtMiddleware {
       }
     };
   }
-  whiteList = ['/', '/sys/auth/token'];
+  whiteList = [
+    '/',
+    '/sys/auth/token',
+    '/baby/feedRecord/page',
+    '/baby/feedRecord/create',
+    '/dict/list',
+  ];
   // 配置忽略鉴权的路由地址
   public match(ctx: Context): boolean {
     const ignore = this.whiteList.includes(ctx.path);

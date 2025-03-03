@@ -28,7 +28,7 @@ export class UserService extends BaseService {
   async page(options: Partial<UserPageDTO>) {
     const { id, account } = options;
 
-    let qBuider = this.userModel
+    let qBuilder = this.userModel
       .createQueryBuilder('a')
       .leftJoinAndSelect(UserRole, 'b', 'a.id =b.userId')
       .leftJoinAndSelect(Role, 'c', 'b.roleId =c.id')
@@ -50,14 +50,14 @@ export class UserService extends BaseService {
         `
       );
     if (id) {
-      qBuider = qBuider.where('a.id = :id', { id });
+      qBuilder = qBuilder.where('a.id = :id', { id });
     }
     if (account) {
-      qBuider = qBuider.where('a.account like :account', {
+      qBuilder = qBuilder.where('a.account like :account', {
         account: account + '%',
       });
     }
-    qBuider = qBuider
+    qBuilder = qBuilder
       .groupBy('a.id')
       .orderBy({
         'a.id': 'ASC',
@@ -66,8 +66,8 @@ export class UserService extends BaseService {
       .take(options.size);
 
     const [list, count] = await Promise.all([
-      qBuider.getRawMany(),
-      qBuider.getCount(),
+      qBuilder.getRawMany(),
+      qBuilder.getCount(),
     ]);
     return { list, count };
   }
@@ -88,7 +88,6 @@ export class UserService extends BaseService {
       ],
       where: { id },
     });
-
     const findRoles = this.roleModel
       .createQueryBuilder('role')
       .select('role.id as roleId,role.name as roleName')

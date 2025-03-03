@@ -2,23 +2,23 @@ import { ApiProperty } from '@midwayjs/swagger';
 import { Rule, RuleType } from '@midwayjs/validate';
 
 export class FeedRecordDTO {
-  @Rule(RuleType.string().required())
+  @Rule(RuleType.number().allow('').empty(''))
   @ApiProperty({
-    example: 'gender',
-    description: '性别',
+    example: 'type',
+    description: '喂养类型(10,20)',
   })
-  code: string;
+  type: number;
 
-  @Rule(RuleType.string().required())
+  @Rule(RuleType.string().allow(''))
   @ApiProperty({
-    example: '性别字典',
-    description: '名称',
+    example: '2025-03-02 22:26:00',
+    description: '喂养时间',
   })
-  name: string;
+  feedTime: string;
 
-  @Rule(RuleType.string().required())
+  @Rule(RuleType.string().allow(''))
   @ApiProperty({
-    example: '[{"code":"0","name":"女性"},{"code":"1","name":"男性"}]',
+    example: '奶粉150ml',
     description: '字典内容',
   })
   content: string;
@@ -27,10 +27,10 @@ export class FeedRecordDTO {
 export class FeedRecordCreateDTO extends FeedRecordDTO {}
 
 export class FeedRecordUpdateDTO extends FeedRecordDTO {
-  @Rule(RuleType.number().allow(''))
+  @Rule(RuleType.number().allow('').empty(''))
   @ApiProperty({
     example: 1,
-    description: '字典id',
+    description: '喂养id',
   })
   id: number;
 }

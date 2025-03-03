@@ -14,9 +14,9 @@ import { BaseController } from '../../base/base.controller';
 import { BabyCreateDTO, BabyPageDTO, BabyUpdateDTO } from '../dto/baby.dto';
 import { BabyService } from '../service/baby.service';
 
-@Controller('/baby/milk_powder', {
+@Controller('/baby/milkPowder', {
   description: '奶粉管理',
-  tagName: 'milk_powder',
+  tagName: 'milkPowder',
 })
 export class MilkPowderController extends BaseController {
   @Inject()
