@@ -35,11 +35,12 @@
     "javascriptreact": "html"
   },
   "files.exclude": {
-    "**/node_modules": true
+    //"**/node_modules": true
   },
   "javascript.inlayHints.parameterNames.enabled": "all",
   "cSpell.words": [
     "midwayjs",
+    "mwtsc",
     "tinyint",
     "typeorm"
   ],

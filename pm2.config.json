@@ -1,0 +1,25 @@
+{
+  "apps": [
+    {
+      "name": "midway-good-baby",
+      "script": "bootstrap.js",
+      "cwd": "./",
+      "exec_mode": "cluster_mode",
+      "instances": 2,
+      "max_memory_restart": "512M",
+      "restart_delay": 30,
+      "autorestart": true,
+      "watch": false,
+      "ignore_watch": "logs",
+      "env": {
+        "NODE_ENV": "production"
+      },
+      "env_production": {
+        "NODE_ENV": "production"
+      },
+      "error_file": "./logs/pm2.error.log",
+      "out_file": "./logs/pm2.out.log",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss"
+    }
+  ]
+}
