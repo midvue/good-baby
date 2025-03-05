@@ -1,7 +1,7 @@
 import { Configuration, App } from '@midwayjs/core';
 import * as koa from '@midwayjs/koa';
-import * as info from '@midwayjs/info';
 import * as validate from '@midwayjs/validate';
+import * as info from '@midwayjs/info';
 import * as orm from '@midwayjs/typeorm';
 import * as upload from '@midwayjs/upload';
 import * as swagger from '@midwayjs/swagger';
@@ -29,8 +29,8 @@ import { JwtMiddleware } from './middleware/jwt';
   ],
   importConfigs: [join(__dirname, './config')],
 })
-export class ContainerLifeCycle {
-  @App()
+export class MainConfiguration {
+  @App('koa')
   app: koa.Application;
 
   async onReady() {
