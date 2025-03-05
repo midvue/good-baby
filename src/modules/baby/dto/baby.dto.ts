@@ -2,26 +2,47 @@ import { ApiProperty } from '@midwayjs/swagger';
 import { Rule, RuleType } from '@midwayjs/validate';
 
 export class BabyDTO {
-  @Rule(RuleType.string().required())
+  @Rule(RuleType.number().allow(''))
   @ApiProperty({
     example: 'gender',
     description: '性别',
   })
-  code: string;
+  gender: number;
 
-  @Rule(RuleType.string().required())
+  @Rule(RuleType.string().allow(''))
   @ApiProperty({
-    example: '性别字典',
-    description: '名称',
+    example: 'gender',
+    description: '昵称',
   })
-  name: string;
+  nickname: string;
 
-  @Rule(RuleType.string().required())
+  @Rule(RuleType.number().allow(''))
   @ApiProperty({
-    example: '[{"code":"0","name":"女性"},{"code":"1","name":"男性"}]',
-    description: '字典内容',
+    example: 'gender',
+    description: '年龄',
   })
-  content: string;
+  age: number;
+
+  @Rule(RuleType.number().allow(''))
+  @ApiProperty({
+    example: 'gender',
+    description: '体重',
+  })
+  weight: number;
+
+  @Rule(RuleType.number().allow(''))
+  @ApiProperty({
+    example: 'gender',
+    description: '出生日期',
+  })
+  birthTime: number;
+
+  @Rule(RuleType.string().allow(''))
+  @ApiProperty({
+    example: 'https://',
+    description: '头像',
+  })
+  avatar: string;
 }
 
 export class BabyCreateDTO extends BabyDTO {}
@@ -30,7 +51,7 @@ export class BabyUpdateDTO extends BabyDTO {
   @Rule(RuleType.number().allow(''))
   @ApiProperty({
     example: 1,
-    description: '字典id',
+    description: 'id',
   })
   id: number;
 }

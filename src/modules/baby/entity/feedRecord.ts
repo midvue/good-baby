@@ -16,5 +16,5 @@ export class FeedRecord extends BaseEntity {
   content: string;
 
   @Column({ name: 'feed_time', comment: '喂养日期', type: 'timestamp' })
-  feedTime: number;
+  feedTime: string;
 }

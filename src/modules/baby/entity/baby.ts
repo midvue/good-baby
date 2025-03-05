@@ -22,7 +22,7 @@ export class Baby extends BaseEntity {
   weight: number;
 
   @Column({ name: 'birth_time', comment: '出生日期', type: 'timestamp' })
-  birth_time: number;
+  birthTime: number;
 
   @Column({ comment: '头像', length: 128 })
   avatar: string;

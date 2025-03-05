@@ -1,6 +1,6 @@
 import { Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
 import {
   AccountCreateDTO,
@@ -15,12 +15,10 @@ export class AccountService extends BaseService {
   accountModel: Repository<Account>;
 
   async page(options: Partial<AccountPageDTO>) {
-    const { id, name, code } = options;
+    const { id } = options;
 
     const where = {
       id,
-      code,
-      name: name ? Like(name + '%') : undefined,
     };
 
     const [list, count] = await this.accountModel.findAndCount({

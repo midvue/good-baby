@@ -2,12 +2,7 @@ import { Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
-import {
-  BabyCreateDTO,
-  BabyDTO,
-  BabyPageDTO,
-  BabyUpdateDTO,
-} from '../dto/baby.dto';
+import { BabyCreateDTO, BabyPageDTO, BabyUpdateDTO } from '../dto/baby.dto';
 import { Baby } from '../entity/baby';
 
 @Provide()
@@ -16,12 +11,12 @@ export class BabyService extends BaseService {
   babyModel: Repository<Baby>;
 
   async page(options: Partial<BabyPageDTO>) {
-    const { id, name, code } = options;
+    const { id, nickname, birthTime } = options;
 
     const where = {
       id,
-      code,
-      name: name ? Like(name + '%') : undefined,
+      birthTime,
+      nickname: nickname ? Like(nickname + '%') : undefined,
     };
 
     const [list, count] = await this.babyModel.findAndCount({
