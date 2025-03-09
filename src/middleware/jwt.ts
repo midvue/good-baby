@@ -24,35 +24,29 @@ export class JwtMiddleware {
       }
 
       const [scheme, token] = parts;
-
-      if (/^Bearer$/i.test(scheme)) {
-        try {
-          //jwt.verify方法验证token是否有效
-          const jwt = (await this.jwtService.verify(token, {
-            complete: true,
-          })) as Jwt;
-          const payload = jwt.payload as JwtPayload;
-          const { id, exp } = payload;
-          const now = Math.floor(Date.now() / 1000);
-          if (now - exp >= 0) {
-            //过期处理
-            throw new httpError.UnauthorizedError('登录状态已过期');
-          }
-          ctx.uid = id;
-        } catch (error) {
-          throw new httpError.UnauthorizedError('身份令牌无效');
-        }
-        await next();
+      if (!/^Bearer$/i.test(scheme)) {
+        throw new httpError.UnauthorizedError('身份令牌无效');
       }
+      try {
+        //jwt.verify方法验证token是否有效
+        const jwt = (await this.jwtService.verify(token, {
+          complete: true,
+        })) as Jwt;
+        const payload = jwt.payload as JwtPayload;
+        const { id, exp } = payload;
+        const now = Math.floor(Date.now() / 1000);
+        if (now - exp >= 0) {
+          //过期处理
+          throw new httpError.UnauthorizedError('登录状态已过期');
+        }
+        ctx.uid = id;
+      } catch (error) {
+        throw new httpError.UnauthorizedError('身份令牌无效');
+      }
+      await next();
     };
   }
-  whiteList = [
-    '/',
-    '/sys/auth/token',
-    '/baby/feedRecord/page',
-    '/baby/feedRecord/create',
-    '/dict/list',
-  ];
+  whiteList = ['/', '/sys/auth/token', '/dict/batch', '/app/account/wxLogin'];
   // 配置忽略鉴权的路由地址
   public match(ctx: Context): boolean {
     const ignore = this.whiteList.includes(ctx.path);

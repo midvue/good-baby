@@ -4,7 +4,7 @@ import { Rule, RuleType } from '@midwayjs/validate';
 export class DictDTO {
   @Rule(RuleType.string().allow('').empty(''))
   @ApiProperty({
-    example: 'dict_gender',
+    example: 'GENDER',
     description: '性别字典code',
   })
   code: string;
@@ -15,6 +15,13 @@ export class DictDTO {
     description: '名称',
   })
   name: string;
+
+  @Rule(RuleType.array<string>().empty(''))
+  @ApiProperty({
+    example: '[GENDER]',
+    description: '字典code数组',
+  })
+  codes: string[];
 }
 
 export class DictCreateDTO extends DictDTO {

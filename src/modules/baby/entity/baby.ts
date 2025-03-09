@@ -9,6 +9,9 @@ export class Baby extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ name: 'family_id', comment: '家庭id' })
+  familyId: number;
+
   @Column({ comment: '昵称', length: 32 })
   nickname: string;
 

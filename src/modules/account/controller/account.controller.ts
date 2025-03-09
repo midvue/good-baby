@@ -15,6 +15,7 @@ import {
   AccountCreateDTO,
   AccountPageDTO,
   AccountUpdateDTO,
+  AccountWxDTO,
 } from '../dto/account.dto';
 import { AccountService } from '../service/account.service';
 
@@ -24,12 +25,19 @@ import { AccountService } from '../service/account.service';
 })
 export class AccountController extends BaseController {
   @Inject()
-  userService: AccountService;
+  accountService: AccountService;
 
   @Post('/page')
   @ApiOperation({ summary: '分页获取列表' })
-  async page(@Body() userDto: AccountPageDTO) {
-    const res = await this.userService.page(userDto);
+  async page(@Body() accountDto: AccountPageDTO) {
+    const res = await this.accountService.page(accountDto);
+    return this.success(res);
+  }
+
+  @Post('/wxLogin')
+  @ApiOperation({ summary: '微信小程序登录' })
+  async wxLogin(@Body() accountDto: AccountWxDTO) {
+    const res = await this.accountService.xwLogin(accountDto);
     return this.success(res);
   }
 
@@ -37,7 +45,7 @@ export class AccountController extends BaseController {
   @ApiOperation({ summary: '查询详情' })
   async info(@Query('id') id: number) {
     const uid = id || this.ctx.uid;
-    const res = await this.userService.info(uid);
+    const res = await this.accountService.info(uid);
     return this.success(res);
   }
 
@@ -45,15 +53,15 @@ export class AccountController extends BaseController {
   @Validate()
   @ApiOperation({ summary: '添加' })
   async create(@Body() dto: AccountCreateDTO) {
-    const res = await this.userService.create(dto);
+    const res = await this.accountService.create(dto);
     return this.success(res);
   }
 
   @Put('/update')
   @Validate()
   @ApiOperation({ summary: '更新' })
-  async update(@Body() user: AccountUpdateDTO) {
-    const res = await this.userService.update(user);
+  async update(@Body() account: AccountUpdateDTO) {
+    const res = await this.accountService.update(account);
     return this.success(res);
   }
 
@@ -61,7 +69,7 @@ export class AccountController extends BaseController {
   @Validate()
   @ApiOperation({ summary: '删除' })
   async delete(@Query('id') id: number) {
-    const res = await this.userService.delete(id);
+    const res = await this.accountService.delete(id);
     return this.success(res);
   }
 }

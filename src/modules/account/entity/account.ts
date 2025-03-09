@@ -10,21 +10,26 @@ export class Account extends BaseEntity {
   id: number;
 
   @Index('uk_account', { unique: true })
-  @Column({ comment: '账号', length: 32 })
+  @Column({ comment: '账号', length: 32, default: null })
   account: string;
 
-  @Column({ comment: '密码', length: 36 })
+  @Column({ comment: '密码', length: 36, default: null })
   password: string;
 
   @Index('uk_open_id', { unique: true })
-  @Column({ comment: '微信openId', length: 32 })
-  openId: string;
+  @Column({ comment: '微信openid', length: 32, default: null })
+  openid: string;
 
   @Index('uk_union_id', { unique: true })
-  @Column({ name: 'union_id', comment: '微信unionId', length: 32 })
-  unionId: string;
+  @Column({
+    name: 'unionid',
+    comment: '微信unionId',
+    length: 32,
+    default: null,
+  })
+  unionid: string;
 
-  @Column({ comment: '昵称', length: 32 })
+  @Column({ comment: '昵称', length: 32, default: null })
   nickname: string;
 
   @Column({ comment: '手机', length: 11, default: '' })

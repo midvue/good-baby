@@ -42,6 +42,7 @@
     "midwayjs",
     "mwtsc",
     "tinyint",
-    "typeorm"
+    "typeorm",
+    "unionid"
   ],
 }

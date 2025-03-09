@@ -25,12 +25,6 @@ export class AccountDTO {
 
   @Rule(RuleType.number().empty(''))
   @ApiProperty({
-    description: '部门id',
-  })
-  deptId: number;
-
-  @Rule(RuleType.number().empty(''))
-  @ApiProperty({
     description: '性别(0:男性,1:女性)',
   })
   gender: number;
@@ -63,6 +57,15 @@ export class AccountCreateDTO extends AccountDTO {
     description: '密码',
   })
   password: string;
+}
+
+export class AccountWxDTO {
+  @Rule(RuleType.string().required())
+  @ApiProperty({
+    example: '小程序code',
+    description: '账号',
+  })
+  code: string;
 }
 
 export class AccountUpdateDTO extends AccountDTO {

@@ -1,6 +1,6 @@
 import { Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
 import {
   DictCreateDTO,
@@ -38,11 +38,20 @@ export class DictService extends BaseService {
   }
 
   async list(options: Partial<DictDTO>) {
-    const { code } = options || {};
+    const { code, name } = options || {};
     const list = await this.dictModel.find({
-      where: { code },
+      where: { code, name: name ? Like(name + '%') : undefined },
     });
     return { list };
+  }
+
+  async batch(options: Partial<DictDTO>) {
+    const { code, codes } = options || {};
+    const list = await this.dictModel.find({
+      select: ['code', 'name', 'list'],
+      where: { code: codes?.length ? In(codes) : code },
+    });
+    return list;
   }
 
   async info(id: number) {

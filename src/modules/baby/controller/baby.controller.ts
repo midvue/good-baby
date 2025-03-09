@@ -11,7 +11,13 @@ import {
 import { ApiOperation } from '@midwayjs/swagger';
 import { Validate } from '@midwayjs/validate';
 import { BaseController } from '../../base/base.controller';
-import { BabyCreateDTO, BabyPageDTO, BabyUpdateDTO } from '../dto/baby.dto';
+import {
+  BabyCreateDTO,
+  BabyDTO,
+  BabyListDTO,
+  BabyPageDTO,
+  BabyUpdateDTO,
+} from '../dto/baby.dto';
 import { BabyService } from '../service/baby.service';
 
 @Controller('/baby', {
@@ -20,12 +26,20 @@ import { BabyService } from '../service/baby.service';
 })
 export class BabyController extends BaseController {
   @Inject()
-  userService: BabyService;
+  babyService: BabyService;
 
   @Post('/page')
   @ApiOperation({ summary: '分页获取列表' })
-  async page(@Body() userDto: BabyPageDTO) {
-    const res = await this.userService.page(userDto);
+  async page(@Body() babyDto: BabyPageDTO) {
+    const res = await this.babyService.page(babyDto);
+    return this.success(res);
+  }
+
+  @Post('/list')
+  @ApiOperation({ summary: '获取宝宝列表' })
+  async list(@Body() dto: BabyListDTO) {
+    dto.userId = dto.userId || this.ctx.uid;
+    const res = await this.babyService.list(dto);
     return this.success(res);
   }
 
@@ -33,7 +47,7 @@ export class BabyController extends BaseController {
   @ApiOperation({ summary: '查询详情' })
   async info(@Query('id') id: number) {
     const uid = id || this.ctx.uid;
-    const res = await this.userService.info(uid);
+    const res = await this.babyService.info(uid);
     return this.success(res);
   }
 
@@ -41,15 +55,16 @@ export class BabyController extends BaseController {
   @Validate()
   @ApiOperation({ summary: '添加' })
   async create(@Body() dto: BabyCreateDTO) {
-    const res = await this.userService.create(dto);
+    dto.userId = dto.userId || this.ctx.uid;
+    const res = await this.babyService.create(dto);
     return this.success(res);
   }
 
   @Put('/update')
   @Validate()
   @ApiOperation({ summary: '更新' })
-  async update(@Body() user: BabyUpdateDTO) {
-    const res = await this.userService.update(user);
+  async update(@Body() baby: BabyUpdateDTO) {
+    const res = await this.babyService.update(baby);
     return this.success(res);
   }
 
@@ -57,7 +72,7 @@ export class BabyController extends BaseController {
   @Validate()
   @ApiOperation({ summary: '删除' })
   async delete(@Query('id') id: number) {
-    const res = await this.userService.delete(id);
+    const res = await this.babyService.delete(id);
     return this.success(res);
   }
 }

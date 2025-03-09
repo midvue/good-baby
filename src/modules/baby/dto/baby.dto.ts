@@ -45,7 +45,44 @@ export class BabyDTO {
   avatar: string;
 }
 
-export class BabyCreateDTO extends BabyDTO {}
+export class BabyCreateDTO extends BabyDTO {
+  @Rule(RuleType.number().allow(''))
+  @ApiProperty({
+    example: 1,
+    description: '用户id',
+  })
+  userId: number;
+
+  @Rule(RuleType.number().allow(''))
+  @ApiProperty({
+    example: 1,
+    description: '自己创建的家庭id',
+  })
+  familyId: number;
+}
+
+export class BabyListDTO extends BabyDTO {
+  @Rule(RuleType.number().allow(''))
+  @ApiProperty({
+    example: 1,
+    description: '宝宝id',
+  })
+  id: number;
+
+  @Rule(RuleType.number().allow(''))
+  @ApiProperty({
+    example: 1,
+    description: '家庭id',
+  })
+  familyId: number;
+
+  @Rule(RuleType.number().allow(''))
+  @ApiProperty({
+    example: 1,
+    description: '当前账号id',
+  })
+  userId: number;
+}
 
 export class BabyUpdateDTO extends BabyDTO {
   @Rule(RuleType.number().allow(''))
