@@ -18,15 +18,15 @@ export class Baby extends BaseEntity {
   @Column({ comment: '年龄', default: 0 })
   age: number;
 
-  @Column({ type: 'tinyint', comment: '性别- 1:男性,0:女性', default: 0 })
+  @Column({ type: 'tinyint', comment: '性别- 20:男性,10:女性', default: 0 })
   gender: number;
 
   @Column({ type: 'int', comment: '体重', default: 0 })
   weight: number;
 
   @Column({ name: 'birth_time', comment: '出生日期', type: 'timestamp' })
-  birthTime: number;
+  birthTime: number | string;
 
-  @Column({ comment: '头像', length: 128 })
+  @Column({ comment: '头像', length: 128, default: null })
   avatar: string;
 }

@@ -30,12 +30,12 @@ export class BabyDTO {
   })
   weight: number;
 
-  @Rule(RuleType.number().allow(''))
+  @Rule(RuleType.string().allow(''))
   @ApiProperty({
     example: 'gender',
     description: '出生日期',
   })
-  birthTime: number;
+  birthTime: string;
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({
