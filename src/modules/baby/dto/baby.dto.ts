@@ -32,12 +32,19 @@ export class BabyDTO {
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({
-    example: 'gender',
+    example: '2025-12-18',
     description: '出生日期',
+  })
+  birthDate: string;
+
+  @Rule(RuleType.string().allow(''))
+  @ApiProperty({
+    example: '05:55',
+    description: '出生时间',
   })
   birthTime: string;
 
-  @Rule(RuleType.string().allow(''))
+  @Rule(RuleType.string().allow('').empty(null))
   @ApiProperty({
     example: 'https://',
     description: '头像',
