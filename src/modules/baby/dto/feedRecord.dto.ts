@@ -4,10 +4,10 @@ import { Rule, RuleType } from '@midwayjs/validate';
 export class FeedRecordDTO {
   @Rule(RuleType.number().allow('').empty(''))
   @ApiProperty({
-    example: 'type',
+    example: '10',
     description: '喂养类型(10,20)',
   })
-  type: number;
+  feedType: number;
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({
@@ -16,15 +16,22 @@ export class FeedRecordDTO {
   })
   feedTime: string;
 
-  @Rule(RuleType.string().allow(''))
+  @Rule(RuleType.object<Record<string, any>>().allow(null).default({}))
   @ApiProperty({
     example: '奶粉150ml',
     description: '字典内容',
   })
-  content: string;
+  content: JSON;
 }
 
-export class FeedRecordCreateDTO extends FeedRecordDTO {}
+export class FeedRecordCreateDTO extends FeedRecordDTO {
+  @Rule(RuleType.number().required())
+  @ApiProperty({
+    example: 1,
+    description: '宝宝id',
+  })
+  babyId: number;
+}
 
 export class FeedRecordUpdateDTO extends FeedRecordDTO {
   @Rule(RuleType.number().allow('').empty(''))

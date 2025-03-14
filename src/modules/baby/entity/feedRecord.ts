@@ -9,12 +9,15 @@ export class FeedRecord extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ comment: '类型', type: 'tinyint' })
-  type: number;
+  @Column({ name: 'baby_id', comment: '宝宝id' })
+  babyId: number;
 
-  @Column({ comment: '喂养内容', length: 32 })
-  content: string;
+  @Column({ name: 'feed_type', comment: '喂养类型', type: 'tinyint' })
+  feedType: number;
 
   @Column({ name: 'feed_time', comment: '喂养日期', type: 'timestamp' })
   feedTime: string;
+
+  @Column({ comment: '喂养内容', type: 'json' })
+  content: JSON;
 }
