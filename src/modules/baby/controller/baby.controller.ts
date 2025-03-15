@@ -51,6 +51,15 @@ export class BabyController extends BaseController {
     return this.success(res);
   }
 
+  @Post('/addFoster')
+  @Validate()
+  @ApiOperation({ summary: '添加喂养人' })
+  async addFoster(@Body() dto: BabyCreateDTO) {
+    dto.userId = dto.userId || this.ctx.uid;
+    const res = await this.babyService.addFoster(dto);
+    return this.success(res);
+  }
+
   @Post('/create')
   @Validate()
   @ApiOperation({ summary: '添加' })

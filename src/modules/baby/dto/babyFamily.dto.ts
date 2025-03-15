@@ -4,20 +4,22 @@ import { Rule, RuleType } from '@midwayjs/validate';
 export class BabyFamilyDTO {
   @Rule(RuleType.number().allow(''))
   @ApiProperty({
-    example: 'gender',
-    description: '性别',
+    example: '1',
+    description: '家庭id',
   })
   id: number;
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({
-    example: 'gender',
-    description: '昵称',
+    example: '家庭',
+    description: '家庭名字',
   })
   name: string;
 }
 
 export class BabyFamilyCreateDTO extends BabyFamilyDTO {}
+
+export class BabyFamilyAddDTO {}
 
 export class BabyFamilyUpdateDTO extends BabyFamilyDTO {
   @Rule(RuleType.number().allow(''))

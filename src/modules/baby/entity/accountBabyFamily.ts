@@ -4,7 +4,7 @@ import { Column, Index, PrimaryGeneratedColumn, Entity } from 'typeorm';
  * 用户-家庭-关系表
  */
 @Entity('account_baby_family', { comment: '用户-家庭-关系表' })
-@Index('uk_compx_id', ['userId', 'familyId', 'role'], {
+@Index('uk_complex_id', ['userId', 'familyId', 'role'], {
   unique: true,
 })
 export class AccountBabyFamily {

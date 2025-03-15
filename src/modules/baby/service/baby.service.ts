@@ -47,10 +47,10 @@ export class BabyService extends BaseService {
   }
 
   async list(dto: BabyListDTO) {
-    let familyList = await this.accountBabyFamilyModel.find({
+    let aFamilyList = await this.accountBabyFamilyModel.find({
       where: { userId: dto.userId },
     });
-    let familyIds = familyList.map(family => family.id);
+    let familyIds = aFamilyList.map(item => item.familyId);
     const list = await this.babyModel.find({
       where: { familyId: In(familyIds) },
     });
@@ -59,6 +59,16 @@ export class BabyService extends BaseService {
   async info(id: number) {
     const info = await this.babyModel.findOne({ where: { id } });
     return info;
+  }
+
+  /** 添加协助者 */
+  async addFoster(dto: BabyCreateDTO) {
+    const { id } = await this.accountBabyFamilyModel.save({
+      ...dto,
+      role: 20,
+    });
+
+    return { id };
   }
 
   async create(dto: BabyCreateDTO) {
