@@ -40,6 +40,13 @@ export class FeedRecordUpdateDTO extends FeedRecordDTO {
     description: '喂养id',
   })
   id: number;
+
+  @Rule(RuleType.number().allow('').empty(''))
+  @ApiProperty({
+    example: 1,
+    description: '宝宝id',
+  })
+  babyId: number;
 }
 
 export class FeedRecordPageDTO extends FeedRecordUpdateDTO {

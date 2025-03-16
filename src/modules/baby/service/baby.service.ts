@@ -78,17 +78,17 @@ export class BabyService extends BaseService {
     const res = await dataSource.transaction(async transMgr => {
       //没有家庭id,先创建家庭
       if (!familyId) {
-        const { id } = await transMgr.save(BabyFamily, {
-          name: userId + '的家庭',
-        });
-        familyId = id;
+        const arr = await Promise.all([
+          transMgr.save(BabyFamily, {
+            name: userId + '的家庭',
+          }),
+          transMgr.save(AccountBabyFamily, { userId, familyId: 1, role: 10 }),
+        ]);
+        familyId = arr[0].id;
       }
-      return await Promise.all([
-        transMgr.save(AccountBabyFamily, { userId, familyId, role: 10 }),
-        transMgr.save(Baby, { familyId, ...baby }),
-      ]);
+      return await transMgr.save(Baby, { familyId, ...baby });
     });
-    return res?.[1];
+    return res;
   }
 
   async update(upDto: BabyUpdateDTO) {

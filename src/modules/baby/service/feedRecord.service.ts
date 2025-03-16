@@ -15,12 +15,13 @@ export class FeedRecordService extends BaseService {
   feedRecordModel: Repository<FeedRecord>;
 
   async page(options: Partial<FeedRecordPageDTO>) {
-    const { id, feedType, feedTime } = options;
+    const { id, feedType, feedTime, babyId } = options;
 
     const where = {
       id,
       feedType,
       feedTime,
+      babyId,
     };
 
     const [list, count] = await this.feedRecordModel.findAndCount({
