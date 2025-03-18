@@ -60,7 +60,7 @@ export class BabyCreateDTO extends BabyDTO {
   })
   userId: number;
 
-  @Rule(RuleType.number().required())
+  @Rule(RuleType.number().allow('').empty(''))
   @ApiProperty({
     example: 1,
     description: '自己创建的家庭id',

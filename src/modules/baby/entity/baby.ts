@@ -27,7 +27,7 @@ export class Baby extends BaseEntity {
   @Column({ name: 'birth_date', comment: '出生日期', type: 'timestamp' })
   birthDate: number | string;
 
-  @Column({ name: 'birth_time', comment: '出生时间' })
+  @Column({ name: 'birth_time', comment: '出生时间', default: '' })
   birthTime: string;
 
   @Column({ comment: '头像', length: 128, default: null })

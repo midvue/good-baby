@@ -4,7 +4,7 @@ import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
  * entity基类
  */
 
-const dateTransformer = {
+export const dateTransformer = {
   from: (value: Date | number) => {
     if (typeof value === 'object') {
       return value.getTime();

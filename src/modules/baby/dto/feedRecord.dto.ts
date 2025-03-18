@@ -4,6 +4,13 @@ import { Rule, RuleType } from '@midwayjs/validate';
 export class FeedRecordDTO {
   @Rule(RuleType.number().allow('').empty(''))
   @ApiProperty({
+    example: 1,
+    description: '创建人id',
+  })
+  createId: number;
+
+  @Rule(RuleType.number().allow('').empty(''))
+  @ApiProperty({
     example: '10',
     description: '喂养类型(10,20)',
   })

@@ -79,7 +79,15 @@ export class AccountService extends BaseService {
   async info(id: number) {
     const res = await Promise.all([
       this.accountModel.findOne({
-        select: ['age', 'id', 'updateTime', 'phone', 'gender', 'nickname'],
+        select: [
+          'age',
+          'id',
+          'updateTime',
+          'phone',
+          'gender',
+          'nickname',
+          'createTime',
+        ],
         where: { id },
       }),
       this.accountBabyFamilyModel.findOne({

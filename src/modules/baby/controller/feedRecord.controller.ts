@@ -45,6 +45,7 @@ export class FeedRecordController extends BaseController {
   @Validate()
   @ApiOperation({ summary: '添加' })
   async create(@Body() dto: FeedRecordCreateDTO) {
+    dto.createId = this.ctx.uid;
     const res = await this.babyService.create(dto);
     return this.success(res);
   }

@@ -12,6 +12,9 @@ export class FeedRecord extends BaseEntity {
   @Column({ name: 'baby_id', comment: '宝宝id' })
   babyId: number;
 
+  @Column({ name: 'create_id', comment: '创建人id' })
+  createId: number;
+
   @Column({ name: 'feed_type', comment: '喂养类型', type: 'tinyint' })
   feedType: number;
 

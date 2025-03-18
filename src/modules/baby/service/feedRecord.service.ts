@@ -27,8 +27,7 @@ export class FeedRecordService extends BaseService {
     const [list, count] = await this.feedRecordModel.findAndCount({
       where,
       order: {
-        id: 'DESC',
-        createTime: 'DESC',
+        feedTime: 'DESC',
       },
       skip: (options.current - 1) * options.size,
       take: options.size,
