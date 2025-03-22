@@ -18,8 +18,8 @@ export class Baby extends BaseEntity {
   @Column({ comment: '年龄', default: 0 })
   age: number;
 
-  @Column({ type: 'tinyint', comment: '性别- 20:男性,10:女性', default: 10 })
-  gender: number;
+  @Column({ length: 2, comment: '性别- 20:男性,10:女性', default: 'x' })
+  gender: string;
 
   @Column({ type: 'int', comment: '体重', default: 0 })
   weight: number;

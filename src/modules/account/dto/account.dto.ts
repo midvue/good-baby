@@ -25,9 +25,9 @@ export class AccountDTO {
 
   @Rule(RuleType.number().empty(''))
   @ApiProperty({
-    description: '性别(0:男性,1:女性)',
+    description: '性别(20:男性,10:女性)',
   })
-  gender: number;
+  gender: string;
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({

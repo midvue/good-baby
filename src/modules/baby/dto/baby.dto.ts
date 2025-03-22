@@ -7,7 +7,7 @@ export class BabyDTO {
     example: 'gender',
     description: '性别',
   })
-  gender: number;
+  gender: '10' | '20';
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({

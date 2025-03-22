@@ -38,6 +38,6 @@ export class Account extends BaseEntity {
   @Column({ comment: '年龄', default: 0 })
   age: number;
 
-  @Column({ type: 'tinyint', comment: '性别- 0:男性,1:女性', default: 0 })
-  gender: number;
+  @Column({ length: 2, comment: '性别- 20:男性,10:女性', default: '' })
+  gender: string;
 }
