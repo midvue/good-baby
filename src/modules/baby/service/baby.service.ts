@@ -17,10 +17,13 @@ import { AccountBabyFamily } from '../entity/accountBabyFamily';
 export class BabyService extends BaseService {
   @InjectEntityModel(Baby)
   babyModel: Repository<Baby>;
+
   @InjectEntityModel(BabyFamily)
   babyFamilyModel: Repository<BabyFamily>;
+
   @InjectEntityModel(AccountBabyFamily)
   accountBabyFamilyModel: Repository<AccountBabyFamily>;
+
   @Inject()
   dataSourceMgr: TypeORMDataSourceManager;
 

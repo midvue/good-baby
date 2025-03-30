@@ -19,7 +19,14 @@ export class BabyFamilyDTO {
 
 export class BabyFamilyCreateDTO extends BabyFamilyDTO {}
 
-export class BabyFamilyAddDTO {}
+export class BabyFamilyListDTO extends BabyFamilyDTO {
+  @Rule(RuleType.number().allow(''))
+  @ApiProperty({
+    example: '1',
+    description: '用户id',
+  })
+  userId: number;
+}
 
 export class BabyFamilyUpdateDTO extends BabyFamilyDTO {
   @Rule(RuleType.number().allow(''))

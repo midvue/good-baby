@@ -1,19 +1,24 @@
 import { Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
 import {
   BabyFamilyCreateDTO,
   BabyFamilyDTO,
+  BabyFamilyListDTO,
   BabyFamilyPageDTO,
   BabyFamilyUpdateDTO,
 } from '../dto/babyFamily.dto';
 import { BabyFamily } from '../entity/babyFamily';
+import { AccountBabyFamily } from '../entity/accountBabyFamily';
 
 @Provide()
 export class BabyFamilyService extends BaseService {
   @InjectEntityModel(BabyFamily)
   babyFamilyModel: Repository<BabyFamily>;
+
+  @InjectEntityModel(AccountBabyFamily)
+  accountBabyFamilyModel: Repository<AccountBabyFamily>;
 
   async page(options: Partial<BabyFamilyPageDTO>) {
     const { id, name } = options;
@@ -36,12 +41,19 @@ export class BabyFamilyService extends BaseService {
     return { list, count };
   }
 
-  async list(options: BabyFamilyDTO) {
-    const { id, name } = options || {};
-    const list = await this.babyFamilyModel.find({
-      where: { id, name: name ? Like(name + '%') : undefined },
+  async list(options: BabyFamilyListDTO) {
+    const { name } = options || {};
+    let familyIds = await this.accountBabyFamilyModel.find({
+      select: ['familyId'],
+      where: { userId: options.userId },
     });
-    return { list };
+    const list = await this.babyFamilyModel.find({
+      where: {
+        id: In(familyIds.map(item => item.familyId)),
+        name: name ? Like(name + '%') : undefined,
+      },
+    });
+    return list;
   }
   async info(id: number) {
     const info = await this.babyFamilyModel.findOne({ where: { id } });

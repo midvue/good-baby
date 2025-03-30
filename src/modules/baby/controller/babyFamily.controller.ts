@@ -14,6 +14,7 @@ import { BaseController } from '../../base/base.controller';
 import {
   BabyFamilyCreateDTO,
   BabyFamilyDTO,
+  BabyFamilyListDTO,
   BabyFamilyPageDTO,
   BabyFamilyUpdateDTO,
 } from '../dto/babyFamily.dto';
@@ -36,7 +37,8 @@ export class BabyFamilyController extends BaseController {
 
   @Post('/list')
   @ApiOperation({ summary: '获取列表' })
-  async list(@Body() dto: BabyFamilyDTO) {
+  async list(@Body() dto: BabyFamilyListDTO) {
+    dto.userId = dto.userId || this.ctx.uid;
     const res = await this.babyFamilyService.list(dto);
     return this.success(res);
   }
