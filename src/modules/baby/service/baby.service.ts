@@ -65,7 +65,7 @@ export class BabyService extends BaseService {
   async addFoster(dto: BabyCreateDTO) {
     const { id } = await this.accountBabyFamilyModel.save({
       ...dto,
-      role: 20,
+      role: '20',
     });
 
     return { id };
@@ -78,13 +78,11 @@ export class BabyService extends BaseService {
     const res = await dataSource.transaction(async transMgr => {
       //没有家庭id,先创建家庭
       if (!familyId) {
-        const arr = await Promise.all([
-          transMgr.save(BabyFamily, {
-            name: userId + '的家庭',
-          }),
-          transMgr.save(AccountBabyFamily, { userId, familyId: 1, role: 10 }),
-        ]);
-        familyId = arr[0].id;
+        let { id } = await transMgr.save(BabyFamily, {
+          name: userId + '的家庭',
+        });
+        familyId = id;
+        transMgr.save(AccountBabyFamily, { userId, familyId, role: '10' });
       }
       return await transMgr.save(Baby, { familyId, ...baby });
     });

@@ -92,7 +92,7 @@ export class AccountService extends BaseService {
       }),
       this.accountBabyFamilyModel.findOne({
         select: ['familyId'],
-        where: { userId: id, role: 10 },
+        where: { userId: id, role: '10' },
       }),
     ]);
     return { ...res[0], familyId: res[1]?.familyId };

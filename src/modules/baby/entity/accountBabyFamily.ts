@@ -18,9 +18,10 @@ export class AccountBabyFamily {
   familyId: number;
 
   @Column({
+    length: 2,
     name: 'role',
     comment: '角色身份(10:创建者,20:受邀者)',
     nullable: false,
   })
-  role: number;
+  role: string;
 }

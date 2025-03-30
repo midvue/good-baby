@@ -2,7 +2,7 @@ import { ApiProperty } from '@midwayjs/swagger';
 import { Rule, RuleType } from '@midwayjs/validate';
 
 export class BabyDTO {
-  @Rule(RuleType.number().allow(''))
+  @Rule(RuleType.string().allow(''))
   @ApiProperty({
     example: 'gender',
     description: '性别',
@@ -11,14 +11,14 @@ export class BabyDTO {
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({
-    example: 'gender',
+    example: '',
     description: '昵称',
   })
   nickname: string;
 
   @Rule(RuleType.number().allow(''))
   @ApiProperty({
-    example: 'gender',
+    example: '20',
     description: '年龄',
   })
   age: number;

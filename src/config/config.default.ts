@@ -13,7 +13,7 @@ export default {
   },
   jwt: {
     secret: '9d894d70-e513-44d0-b30e-c7bf465d4a7',
-    expiresIn: '2d', // https://github.com/vercel/ms
+    expiresIn: '7d', // https://github.com/vercel/ms
   },
   midwayLogger: {
     default: {
