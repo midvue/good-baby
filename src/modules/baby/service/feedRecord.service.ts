@@ -1,6 +1,7 @@
+import { minute } from '@mid-vue/shared';
 import { Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
 import {
   FeedRecordCreateDTO,
@@ -15,13 +16,15 @@ export class FeedRecordService extends BaseService {
   feedRecordModel: Repository<FeedRecord>;
 
   async page(options: Partial<FeedRecordPageDTO>) {
-    const { id, feedType, feedTime, babyId } = options;
+    const { id, feedType, startFeedTime, endFeedTime, babyId } = options;
 
     const where = {
       id,
-      feedType,
-      feedTime,
+      feedTime: startFeedTime
+        ? Between(startFeedTime, endFeedTime || minute(Date.now()))
+        : undefined,
       babyId,
+      feedType,
     };
 
     const [list, count] = await this.feedRecordModel.findAndCount({

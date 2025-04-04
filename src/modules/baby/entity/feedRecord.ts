@@ -1,10 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
 import { BaseEntity } from '../../base/base.entity';
 
 /**
  * 宝宝喂养记录
  */
 @Entity('baby_feed_record', { comment: '宝宝喂养记录' })
+@Index('uk_complex_time_baby', ['feedTime', 'babyId', 'feedType'])
 export class FeedRecord extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;

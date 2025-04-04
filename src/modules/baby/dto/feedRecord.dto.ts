@@ -23,6 +23,20 @@ export class FeedRecordDTO {
   })
   feedTime: string;
 
+  @Rule(RuleType.string().allow(''))
+  @ApiProperty({
+    example: '2025-03-02 22:26:00',
+    description: '起始喂养时间',
+  })
+  startFeedTime: string;
+
+  @Rule(RuleType.string().allow(''))
+  @ApiProperty({
+    example: '2025-03-02 22:26:00',
+    description: '结束喂养时间',
+  })
+  endFeedTime: string;
+
   @Rule(RuleType.object<Record<string, any>>().allow(null).default({}))
   @ApiProperty({
     example: '奶粉150ml',
