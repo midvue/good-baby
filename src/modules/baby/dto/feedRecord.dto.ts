@@ -37,6 +37,13 @@ export class FeedRecordDTO {
   })
   endFeedTime: string;
 
+  @Rule(RuleType.string().allow(''))
+  @ApiProperty({
+    example: '',
+    description: '备注',
+  })
+  remark: string;
+
   @Rule(RuleType.object<Record<string, any>>().allow(null).default({}))
   @ApiProperty({
     example: '奶粉150ml',

@@ -53,8 +53,8 @@ export class FeedRecordController extends BaseController {
   @Put('/update')
   @Validate()
   @ApiOperation({ summary: '更新' })
-  async update(@Body() user: FeedRecordUpdateDTO) {
-    const res = await this.babyService.update(user);
+  async update(@Body() dto: FeedRecordUpdateDTO) {
+    const res = await this.babyService.update(dto);
     return this.success(res);
   }
 
