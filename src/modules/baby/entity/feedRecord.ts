@@ -25,6 +25,6 @@ export class FeedRecord extends BaseEntity {
   @Column({ comment: '喂养内容', type: 'json' })
   content: JSON;
 
-  @Column({ name: 'remark', comment: '备注', length: 128 })
+  @Column({ name: 'remark', comment: '备注', length: 128, default: null })
   remark: string;
 }

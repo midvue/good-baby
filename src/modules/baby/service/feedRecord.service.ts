@@ -39,6 +39,26 @@ export class FeedRecordService extends BaseService {
     return { list, count };
   }
 
+  async list(options: Partial<FeedRecordUpdateDTO>) {
+    const { id, feedType, startFeedTime, endFeedTime, babyId } = options;
+
+    const where = {
+      id,
+      feedTime: startFeedTime
+        ? Between(startFeedTime, endFeedTime || minute(Date.now()))
+        : undefined,
+      babyId,
+      feedType,
+    };
+
+    const list = await this.feedRecordModel.find({
+      select: ['babyId', 'feedTime', 'feedType', 'content'],
+      where,
+    });
+
+    return list;
+  }
+
   async info(id: number) {
     const info = await this.feedRecordModel.findOne({ where: { id } });
     return info;

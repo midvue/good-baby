@@ -33,6 +33,13 @@ export class FeedRecordController extends BaseController {
     return this.success(res);
   }
 
+  @Post('/list')
+  @ApiOperation({ summary: '获取列表' })
+  async list(@Body() userDto: FeedRecordUpdateDTO) {
+    const res = await this.babyService.list(userDto);
+    return this.success(res);
+  }
+
   @Get('/info')
   @ApiOperation({ summary: '查询详情' })
   async info(@Query('id') id: number) {
