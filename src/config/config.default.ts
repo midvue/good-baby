@@ -42,5 +42,9 @@ export default {
   swagger: {
     title: 'good baby',
     description: 'good baby 宝宝成长系统',
+    auth: {
+      authType: 'apikey',
+      name: 'Authorization',
+    },
   },
 } as MidwayConfig;

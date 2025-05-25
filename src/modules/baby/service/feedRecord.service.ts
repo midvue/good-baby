@@ -1,12 +1,14 @@
 import { minute } from '@mid-vue/shared';
 import { Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, In, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
 import {
   FeedRecordCreateDTO,
+  FeedRecordDTO,
   FeedRecordPageDTO,
   FeedRecordUpdateDTO,
+  LatestFeedRecordDto,
 } from '../dto/feedRecord.dto';
 import { FeedRecord } from '../entity/feedRecord';
 
@@ -57,6 +59,31 @@ export class FeedRecordService extends BaseService {
     });
 
     return list;
+  }
+
+  /**
+   * 获取指定 babyId 的最新喂养记录
+   * @param babyId 宝宝 ID
+   * @param feedTypes 喂养类型数组
+   */
+  async latestFeedRecords(dto: LatestFeedRecordDto) {
+    const { babyId, feedTypes } = dto;
+    // 遍历 feedTypes 数组
+    // 创建一个数组来存储所有的查询 Promise，去掉 await 让查询并行执行
+    const promiseArray = feedTypes.map(feedType => {
+      return this.feedRecordModel.findOne({
+        select: ['babyId', 'feedTime', 'feedType', 'content'],
+        where: {
+          babyId,
+          feedType,
+        },
+        order: {
+          feedTime: 'DESC',
+        },
+      });
+    });
+    const results = await Promise.all(promiseArray);
+    return results;
   }
 
   async info(id: number) {

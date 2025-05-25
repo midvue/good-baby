@@ -86,3 +86,9 @@ export class FeedRecordPageDTO extends FeedRecordUpdateDTO {
   @ApiProperty({ example: 1, description: '当前页码' })
   current: number;
 }
+
+export class LatestFeedRecordDto extends FeedRecordCreateDTO {
+  @Rule(RuleType.array().items(RuleType.number()).required())
+  @ApiProperty({ example: [10, 20], description: '喂养类型' })
+  feedTypes: Array<number>;
+}
