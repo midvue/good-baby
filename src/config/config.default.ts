@@ -51,8 +51,8 @@ export default {
   wx: {
     // 微信小程序配置 appid  secret  小程序id  小程序密钥
     miniapp: {
-      appid: 'wx439728a6ea05a2a4',
-      secret: '1c3905a4be6b6d7e8b71043d1ba6dcfb',
+      appid: 'wx45c4433ce635c795',
+      secret: 'a9db883afd8bf1e09e0ad58af353bf86',
     },
   },
 } as MidwayConfig;
