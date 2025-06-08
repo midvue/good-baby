@@ -1,4 +1,4 @@
-import { Inject, Provide } from '@midwayjs/core';
+import { Config, Inject, Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
@@ -26,6 +26,9 @@ export class AccountService extends BaseService {
   accountBabyFamilyModel: Repository<AccountBabyFamily>;
   @Inject()
   jwtService: JwtService;
+
+  @Config('wx')
+  wxConfig: { miniapp: { appid: string; secret: string } };
   /** 微信获取openid */
   async xwLogin(dto: AccountWxDTO) {
     const { data } = await makeHttpRequest(
@@ -34,8 +37,8 @@ export class AccountService extends BaseService {
         data: {
           js_code: dto.code,
           grant_type: 'authorization_code',
-          appid: 'wx439728a6ea05a2a4',
-          secret: '1c3905a4be6b6d7e8b71043d1ba6dcfb',
+          appid: this.wxConfig.miniapp.appid,
+          secret: this.wxConfig.miniapp.secret,
         },
         dataType: 'json',
       }

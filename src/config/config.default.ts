@@ -47,4 +47,12 @@ export default {
       name: 'Authorization',
     },
   },
+
+  wx: {
+    // 微信小程序配置 appid  secret  小程序id  小程序密钥
+    miniapp: {
+      appid: 'wx439728a6ea05a2a4',
+      secret: '1c3905a4be6b6d7e8b71043d1ba6dcfb',
+    },
+  },
 } as MidwayConfig;
