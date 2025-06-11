@@ -97,7 +97,7 @@ export class FeedRecordService extends BaseService {
 
   async create(inDto: FeedRecordCreateDTO) {
     const { id } = await this.feedRecordModel.save(inDto);
-    this.pointsRecordService.add(inDto.createId, 'add_first_feed');
+    this.pointsRecordService.add(inDto.createId, 'add_daily_feed');
     return { id };
   }
 

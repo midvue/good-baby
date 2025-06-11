@@ -3,7 +3,10 @@ import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
 import { PointsSummary } from '../entity/pointsSummary';
-import { PointsSummaryPageDTO } from '../dto/pointsSummary.dto';
+import {
+  PointsSummaryDTO,
+  PointsSummaryPageDTO,
+} from '../dto/pointsSummary.dto';
 
 @Provide()
 export class PointsSummaryService extends BaseService {
@@ -25,6 +28,13 @@ export class PointsSummaryService extends BaseService {
       order: { date: 'DESC' },
     });
     return { list, total };
+  }
+
+  /**
+   * 获取指定用户的积分汇总记录
+   */
+  info(dto: PointsSummaryDTO) {
+    return this.pointsSummaryModel.findOne({ where: dto });
   }
 
   /**

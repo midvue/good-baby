@@ -7,7 +7,6 @@ export class PointsRecord extends BaseEntity {
   @PrimaryColumn({
     comment: '主键ID',
     type: 'bigint',
-    unique: true,
     nullable: false,
     transformer: snowflakeTransformer,
   })
@@ -26,6 +25,7 @@ export class PointsRecord extends BaseEntity {
     comment: '积分完成状态 10 未完成，20 已完成，30 已领取',
     length: 8,
     type: 'varchar',
+    nullable: true,
   })
   status: string;
 

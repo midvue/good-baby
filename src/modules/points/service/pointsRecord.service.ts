@@ -1,4 +1,4 @@
-import { Inject, Provide } from '@midwayjs/core';
+import { Init, Inject, Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Repository, Between, In } from 'typeorm';
 import { BaseService } from '../../base/base.service';
@@ -7,6 +7,7 @@ import { PointsRecordDTO, PointsRecordPageDTO } from '../dto/pointsRecord.dto';
 import { EnumYesNoPlus, useDate } from '@mid-vue/shared';
 import { PointsRule } from '../entity/pointsRule';
 import { PointsSummaryService } from './pointsSummary.service';
+import { Snowflake } from 'nodejs-snowflake';
 
 @Provide()
 export class PointsRecordService extends BaseService {
@@ -66,9 +67,17 @@ export class PointsRecordService extends BaseService {
       where: { code: ruleCode },
     });
     if (!rule) throw new Error('未找到积分规则');
-    return await this.pointsRecordModel.save({
+    /** 雪花ID */
+    const uid = new Snowflake({
+      instance_id: 1,
+      custom_epoch: 1734472500000,
+    });
+    return await this.pointsRecordModel.insert({
+      //@ts-ignore
+      id: uid.getUniqueID(),
       userId,
       changeType,
+      status: EnumYesNoPlus.NO,
       ruleCode,
       points: changeType === EnumYesNoPlus.YES ? rule.points : -rule.points,
     });
@@ -89,6 +98,7 @@ export class PointsRecordService extends BaseService {
     this.pointsSummaryService.insertOrUpdate({
       userId: dto.userId,
       date: useDate().format('YYYY-MM-DD'),
+      todayPoints: rule.points,
       totalPoints: rule.points,
     });
 
