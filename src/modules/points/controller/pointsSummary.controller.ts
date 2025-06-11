@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Inject, Post } from '@midwayjs/core';
 import { ApiOperation, ApiTags } from '@midwayjs/swagger';
-import { Validate } from '@midwayjs/validate';
 import { BaseController } from '../../base/base.controller';
 import { PointsSummaryService } from '../service/pointsSummary.service';
 import { PointsSummaryPageDTO } from '../dto/pointsSummary.dto';
@@ -13,8 +12,8 @@ export class PointsSummaryController extends BaseController {
 
   @Post('/page')
   @ApiOperation({ summary: '积分汇总分页查询' })
-  async getPage(@Body() dto: PointsSummaryPageDTO) {
-    const res = await this.pointsSummaryService.getPage(dto);
+  async page(@Body() dto: PointsSummaryPageDTO) {
+    const res = await this.pointsSummaryService.page(dto);
     return this.success(res);
   }
 }

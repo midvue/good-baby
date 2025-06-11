@@ -12,6 +12,6 @@ export class PointsSummary extends BaseEntity {
   @Column({ comment: '统计日期，格式为 YYYY-MM-DD' })
   date: string;
 
-  @Column({ comment: '当日积分总和' })
+  @Column({ comment: '当日积分总和', default: 0, name: 'total_points' })
   totalPoints: number;
 }

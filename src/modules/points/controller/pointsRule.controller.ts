@@ -13,8 +13,8 @@ export class PointsRuleController extends BaseController {
 
   @Post('/page')
   @ApiOperation({ summary: '积分规则分页查询' })
-  async getPage(@Body() dto: PointsRulePageDTO) {
-    const res = await this.pointsRuleService.getPage(dto);
+  async page(@Body() dto: PointsRulePageDTO) {
+    const res = await this.pointsRuleService.page(dto);
     return this.success(res);
   }
 

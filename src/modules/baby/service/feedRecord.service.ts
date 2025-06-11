@@ -1,5 +1,5 @@
 import { minute } from '@mid-vue/shared';
-import { Provide } from '@midwayjs/core';
+import { Inject, Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Between, In, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
@@ -11,11 +11,15 @@ import {
   LatestFeedRecordDto,
 } from '../dto/feedRecord.dto';
 import { FeedRecord } from '../entity/feedRecord';
+import { PointsRecordService } from '../../points/service/pointsRecord.service';
 
 @Provide()
 export class FeedRecordService extends BaseService {
   @InjectEntityModel(FeedRecord)
   feedRecordModel: Repository<FeedRecord>;
+
+  @Inject()
+  pointsRecordService: PointsRecordService;
 
   async page(options: Partial<FeedRecordPageDTO>) {
     const { id, feedType, startFeedTime, endFeedTime, babyId } = options;
@@ -93,6 +97,7 @@ export class FeedRecordService extends BaseService {
 
   async create(inDto: FeedRecordCreateDTO) {
     const { id } = await this.feedRecordModel.save(inDto);
+    this.pointsRecordService.add(inDto.createId, 'add_first_feed');
     return { id };
   }
 

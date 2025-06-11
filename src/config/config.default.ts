@@ -55,4 +55,8 @@ export default {
       secret: '1c3905a4be6b6d7e8b71043d1ba6dcfb',
     },
   },
+  snowflake: {
+    instance_id: 1, // 实例ID，取值范围 0-31，默认为 0
+    custom_epoch: 1734472500000, // 其实时间戳，默认为 （2024-12-18 05:55:00）
+  },
 } as MidwayConfig;

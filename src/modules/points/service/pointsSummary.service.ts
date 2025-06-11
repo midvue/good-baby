@@ -14,7 +14,7 @@ export class PointsSummaryService extends BaseService {
    * 分页查询积分汇总记录
    * @param dto 分页查询参数
    */
-  async getPage(dto: PointsSummaryPageDTO) {
+  async page(dto: PointsSummaryPageDTO) {
     const [list, total] = await this.pointsSummaryModel.findAndCount({
       where: {
         userId: dto.userId,
@@ -25,5 +25,13 @@ export class PointsSummaryService extends BaseService {
       order: { date: 'DESC' },
     });
     return { list, total };
+  }
+
+  /**
+   * 创建积分汇总记录
+   * @param summary 积分汇总记录
+   */
+  async insertOrUpdate(summary: Partial<PointsSummary>) {
+    return this.pointsSummaryModel.save(summary);
   }
 }
