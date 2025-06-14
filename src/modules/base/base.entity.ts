@@ -22,7 +22,6 @@ const snowFlake = new Snowflake({
   instance_id: 1, // 实例ID，取值范围 0-31，默认为 0
   custom_epoch: 1734472500000, // 其实时间戳，默认为 （2023-01-27 12:00:00）
 });
-console.log('snowFlake', snowFlake);
 
 /**
  * entity基类
