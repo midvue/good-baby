@@ -21,7 +21,7 @@ import {
 import { BabyFamilyService } from '../service/babyFamily.service';
 
 @Controller('/babyFamily', {
-  description: '宝宝管理',
+  description: '家庭管理',
   tagName: 'babyFamily',
 })
 export class BabyFamilyController extends BaseController {

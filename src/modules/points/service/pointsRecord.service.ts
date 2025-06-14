@@ -62,19 +62,17 @@ export class PointsRecordService extends BaseService {
    * @param ruleKey 规则标识
    * @param changeType 变动类型（add/subtract）
    */
-  async add(userId: number, ruleCode: string, changeType = EnumYesNoPlus.YES) {
+  async add(userId: string, ruleCode: string, changeType = EnumYesNoPlus.YES) {
     const rule = await this.pointsRuleModel.findOne({
       where: { code: ruleCode },
     });
     if (!rule) throw new Error('未找到积分规则');
-    /** 雪花ID */
-    const uid = new Snowflake({
-      instance_id: 1,
-      custom_epoch: 1734472500000,
-    });
+    // /** 雪花ID */
+    // const uid = new Snowflake({
+    //   instance_id: 1,
+    //   custom_epoch: 1734472500000,
+    // });
     return await this.pointsRecordModel.insert({
-      //@ts-ignore
-      id: uid.getUniqueID(),
       userId,
       changeType,
       status: EnumYesNoPlus.NO,

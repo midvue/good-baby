@@ -1,19 +1,11 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { BaseEntity, snowflakeTransformer } from '../../base/base.entity';
 import { EnumYesNoPlus } from '@mid-vue/shared';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { BaseEntity, SnowIdBaseEntity } from '../../base/base.entity';
 
 @Entity()
-export class PointsRecord extends BaseEntity {
-  @PrimaryColumn({
-    comment: '主键ID',
-    type: 'bigint',
-    nullable: false,
-    transformer: snowflakeTransformer,
-  })
-  id: string;
-
+export class PointsRecord extends SnowIdBaseEntity {
   @Column({ comment: '用户ID' })
-  userId: number;
+  userId: string;
 
   @Column({ comment: '规则编码', length: 32, name: 'rule_code' })
   ruleCode: string;

@@ -4,8 +4,8 @@ import { Rule, RuleType } from '@midwayjs/validate';
 /** 积分记录分页查询DTO */
 export class PointsRecordDTO {
   @ApiProperty({ description: '用户ID', example: 1 })
-  @Rule(RuleType.number().allow('').empty(''))
-  userId?: number;
+  @Rule(RuleType.string().allow('').empty(''))
+  userId?: string;
 
   @ApiProperty({
     description: '变动开始日期（YYYY-MM-DD）',

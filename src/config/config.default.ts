@@ -6,6 +6,7 @@ export default {
   koa: {
     port: 7202,
   },
+
   validate: {
     validationOptions: {
       stripUnknown: true, // 全局生效
@@ -43,8 +44,7 @@ export default {
     title: 'good baby',
     description: 'good baby 宝宝成长系统',
     auth: {
-      authType: 'apikey',
-      name: 'Authorization',
+      authType: 'bearer',
     },
   },
 

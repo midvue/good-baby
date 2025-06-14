@@ -90,14 +90,16 @@ export class FeedRecordService extends BaseService {
     return results;
   }
 
-  async info(id: number) {
+  async info(id: string) {
     const info = await this.feedRecordModel.findOne({ where: { id } });
     return info;
   }
 
   async create(inDto: FeedRecordCreateDTO) {
-    const { id } = await this.feedRecordModel.save(inDto);
-    this.pointsRecordService.add(inDto.createId, 'add_daily_feed');
+    const { id } = await this.feedRecordModel.save(
+      Object.assign(new FeedRecord(), inDto)
+    );
+    // this.pointsRecordService.add(inDto.createId, 'add_daily_feed');
     return { id };
   }
 

@@ -1,5 +1,10 @@
 import { Snowflake } from 'nodejs-snowflake';
-import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  CreateDateColumn,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 /** 日期转换 */
 export const dateTransformer = {
@@ -11,24 +16,13 @@ export const dateTransformer = {
   },
   to: () => new Date(),
 };
-/** 雪花ID */
-const uid = new Snowflake({
-  instance_id: 1,
-  custom_epoch: 1734472500000,
-});
 
-/** 雪花ID转换 */
-export const snowflakeTransformer = {
-  from: (value: BigInt) => {
-    if (typeof value === 'bigint') {
-      return value.toString();
-    }
-    return value;
-  },
-  to: () => {
-    return uid.getUniqueID(); // 返回一个新的唯一ID
-  },
-};
+/** 雪花ID */
+const snowFlake = new Snowflake({
+  instance_id: 1, // 实例ID，取值范围 0-31，默认为 0
+  custom_epoch: 1734472500000, // 其实时间戳，默认为 （2023-01-27 12:00:00）
+});
+console.log('snowFlake', snowFlake);
 
 /**
  * entity基类
@@ -55,4 +49,23 @@ export abstract class BaseEntity {
     transformer: dateTransformer,
   })
   updateTime: number;
+}
+
+/**
+ * 雪花id的基类
+ */
+export abstract class SnowIdBaseEntity extends BaseEntity {
+  @PrimaryColumn({
+    type: 'bigint',
+    transformer: {
+      from: value => value.toString(),
+      to: value => value,
+    },
+  })
+  id: string;
+
+  @BeforeInsert()
+  async beforeInsert() {
+    this.id = snowFlake.getUniqueID().toString();
+  }
 }

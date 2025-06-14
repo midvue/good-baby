@@ -2,12 +2,12 @@ import { ApiProperty } from '@midwayjs/swagger';
 import { Rule, RuleType } from '@midwayjs/validate';
 
 export class FeedRecordDTO {
-  @Rule(RuleType.number().allow('').empty(''))
+  @Rule(RuleType.string().allow('').empty(''))
   @ApiProperty({
     example: 1,
     description: '创建人id',
   })
-  createId: number;
+  createId: string;
 
   @Rule(RuleType.number().allow('').empty(''))
   @ApiProperty({
@@ -53,28 +53,28 @@ export class FeedRecordDTO {
 }
 
 export class FeedRecordCreateDTO extends FeedRecordDTO {
-  @Rule(RuleType.number().required())
+  @Rule(RuleType.string().required())
   @ApiProperty({
     example: 1,
     description: '宝宝id',
   })
-  babyId: number;
+  babyId: string;
 }
 
 export class FeedRecordUpdateDTO extends FeedRecordDTO {
-  @Rule(RuleType.number().allow('').empty(''))
+  @Rule(RuleType.string().allow('').empty(''))
   @ApiProperty({
     example: 1,
     description: '喂养id',
   })
-  id: number;
+  id: string;
 
-  @Rule(RuleType.number().allow('').empty(''))
+  @Rule(RuleType.string().allow('').empty(''))
   @ApiProperty({
     example: 1,
     description: '宝宝id',
   })
-  babyId: number;
+  babyId: string;
 }
 
 export class FeedRecordPageDTO extends FeedRecordUpdateDTO {

@@ -55,13 +55,15 @@ export class BabyFamilyService extends BaseService {
     });
     return list;
   }
-  async info(id: number) {
+  async info(id: string) {
     const info = await this.babyFamilyModel.findOne({ where: { id } });
     return info;
   }
 
   async create(inDto: BabyFamilyCreateDTO) {
-    const { id } = await this.babyFamilyModel.save(inDto);
+    const { id } = await this.babyFamilyModel.save(
+      Object.assign(new BabyFamily(), inDto)
+    );
     return { id };
   }
 

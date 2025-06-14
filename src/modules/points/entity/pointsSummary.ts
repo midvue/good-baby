@@ -7,7 +7,7 @@ export class PointsSummary extends BaseEntity {
   id: number;
 
   @Column({ comment: '用户ID' })
-  userId: number;
+  userId: string;
 
   @Column({ comment: '统计日期，格式为 YYYY-MM-DD' })
   date: string;

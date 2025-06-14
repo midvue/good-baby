@@ -53,19 +53,19 @@ export class BabyDTO {
 }
 
 export class BabyCreateDTO extends BabyDTO {
-  @Rule(RuleType.number().allow(''))
+  @Rule(RuleType.string().allow(''))
   @ApiProperty({
     example: 1,
     description: '用户id',
   })
-  userId: number;
+  userId: string;
 
-  @Rule(RuleType.number().allow('').empty(''))
+  @Rule(RuleType.string().allow('').empty(''))
   @ApiProperty({
     example: 1,
     description: '自己创建的家庭id',
   })
-  familyId: number;
+  familyId: string;
 }
 
 export class BabyListDTO extends BabyDTO {
@@ -74,21 +74,21 @@ export class BabyListDTO extends BabyDTO {
     example: 1,
     description: '宝宝id',
   })
-  id: number;
+  id: string;
 
   @Rule(RuleType.number().allow(''))
   @ApiProperty({
     example: 1,
     description: '家庭id',
   })
-  familyId: number;
+  familyId: string;
 
   @Rule(RuleType.number().allow(''))
   @ApiProperty({
     example: 1,
     description: '当前账号id',
   })
-  userId: number;
+  userId: string;
 }
 
 export class BabyUpdateDTO extends BabyDTO {
@@ -97,7 +97,7 @@ export class BabyUpdateDTO extends BabyDTO {
     example: 1,
     description: 'id',
   })
-  id: number;
+  id: string;
 }
 
 export class BabyPageDTO extends BabyUpdateDTO {

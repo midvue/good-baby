@@ -74,7 +74,7 @@ export class AccountUpdateDTO extends AccountDTO {
     example: 1,
     description: '角色id',
   })
-  id: number;
+  id: string;
 }
 
 export class AccountPageDTO extends AccountUpdateDTO {

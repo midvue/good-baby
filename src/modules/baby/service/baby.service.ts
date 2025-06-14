@@ -59,7 +59,7 @@ export class BabyService extends BaseService {
     });
     return list;
   }
-  async info(id: number) {
+  async info(id: string) {
     const info = await this.babyModel.findOne({ where: { id } });
     return info;
   }
@@ -81,13 +81,17 @@ export class BabyService extends BaseService {
     const res = await dataSource.transaction(async transMgr => {
       //没有家庭id,先创建家庭
       if (!familyId) {
-        let { id } = await transMgr.save(BabyFamily, {
-          name: userId + '的家庭',
-        });
+        let { id } = await transMgr.save(
+          BabyFamily,
+          Object.assign(new BabyFamily(), { name: baby.nickname })
+        );
         familyId = id;
         transMgr.save(AccountBabyFamily, { userId, familyId, role: '10' });
       }
-      return await transMgr.save(Baby, { familyId, ...baby });
+      return await transMgr.save(
+        Baby,
+        Object.assign(new Baby(), { ...baby, familyId })
+      );
     });
     return res;
   }
@@ -96,7 +100,7 @@ export class BabyService extends BaseService {
     return await this.babyModel.update(upDto.id, upDto);
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     return await this.babyModel.delete(id);
   }
 }
