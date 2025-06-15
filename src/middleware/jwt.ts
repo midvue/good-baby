@@ -14,7 +14,7 @@ export class JwtMiddleware {
     return async (ctx: Context, next: NextFunction) => {
       // 判断下有没有校验信息
       if (!ctx.headers['authorization']) {
-        throw new httpError.UnauthorizedError();
+        throw new httpError.UnauthorizedError(ctx.url);
       }
       // 从 header 上获取校验信息
       const parts = ctx.get('authorization').trim().split(' ');
@@ -46,7 +46,13 @@ export class JwtMiddleware {
       await next();
     };
   }
-  whiteList = ['/', '/sys/auth/token', '/dict/batch', '/app/account/wxLogin'];
+  whiteList = [
+    '/',
+    '/sys/auth/token',
+    '/dict/batch',
+    '/app/account/wxLogin',
+    '/upload/importExcel',
+  ];
   // 配置忽略鉴权的路由地址
   public match(ctx: Context): boolean {
     const ignore = this.whiteList.includes(ctx.path);

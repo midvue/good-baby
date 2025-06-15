@@ -12,6 +12,7 @@ import { DefaultErrorFilter } from './filter/default.filter';
 //import { ReportMiddleware } from './middleware/report.middleware';
 import { JwtMiddleware } from './middleware/jwt';
 import * as cron from '@midwayjs/cron';
+import * as busboy from '@midwayjs/busboy';
 dotenv.config({
   path: [
     resolve(process.cwd(), '.env.local'),
@@ -26,6 +27,7 @@ dotenv.config({
     orm,
     jwt,
     cron,
+    busboy,
     {
       component: swagger,
       enabledEnvironment: ['local'],

@@ -1,12 +1,11 @@
 import { MidwayAppInfo, MidwayConfig } from '@midwayjs/core';
 
 export default (appInfo: MidwayAppInfo): MidwayConfig => {
-  console.log(appInfo.env, process.env.MYSQL_HOST);
   return {
     keys: process.env.MIDWAY_KEYS,
     jwt: {
       secret: process.env.JWT_SECRET,
-      expiresIn: '30d', // https://github.com/vercel/ms
+      expiresIn: '30d',
     },
     typeorm: {
       dataSource: {
