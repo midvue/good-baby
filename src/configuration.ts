@@ -2,14 +2,22 @@ import { Configuration, App } from '@midwayjs/core';
 import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
+import * as dotenv from 'dotenv';
+
 import * as orm from '@midwayjs/typeorm';
 import * as swagger from '@midwayjs/swagger';
 import * as jwt from '@midwayjs/jwt';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { DefaultErrorFilter } from './filter/default.filter';
 //import { ReportMiddleware } from './middleware/report.middleware';
 import { JwtMiddleware } from './middleware/jwt';
 import * as cron from '@midwayjs/cron';
+dotenv.config({
+  path: [
+    resolve(process.cwd(), '.env.local'),
+    resolve(process.cwd(), '.env.production'),
+  ],
+});
 
 @Configuration({
   imports: [
