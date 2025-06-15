@@ -1,3 +1,4 @@
+import { getCurrentMainApp } from '@midwayjs/core';
 import { Snowflake } from 'nodejs-snowflake';
 import {
   BeforeInsert,

@@ -3,7 +3,6 @@ import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
 import * as orm from '@midwayjs/typeorm';
-import * as upload from '@midwayjs/upload';
 import * as swagger from '@midwayjs/swagger';
 import * as jwt from '@midwayjs/jwt';
 import { join } from 'path';
@@ -17,7 +16,6 @@ import * as cron from '@midwayjs/cron';
     koa,
     validate,
     orm,
-    upload,
     jwt,
     cron,
     {
