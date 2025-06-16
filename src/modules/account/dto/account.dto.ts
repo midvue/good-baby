@@ -69,7 +69,7 @@ export class AccountWxDTO {
 }
 
 export class AccountUpdateDTO extends AccountDTO {
-  @Rule(RuleType.number().allow(''))
+  @Rule(RuleType.string().allow(''))
   @ApiProperty({
     example: 1,
     description: '角色id',
