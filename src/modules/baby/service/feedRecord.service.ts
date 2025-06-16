@@ -107,7 +107,7 @@ export class FeedRecordService extends BaseService {
     return await this.feedRecordModel.update(upDto.id, upDto);
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     return await this.feedRecordModel.delete(id);
   }
 }
