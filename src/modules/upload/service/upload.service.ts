@@ -54,20 +54,20 @@ export class UploadService extends BaseService {
       return camelize(key.replace(/_/g, '-'));
     });
     const values = data.slice(1);
+
     const result = values.map(item => {
       const obj = new FeedRecord();
       item.forEach((value, index) => {
         let key = keys[index];
         if (key === 'babyId') {
-          value = '64820209130669056';
+          value = '65504853031388160';
         } else if (key === 'createId') {
-          value = value === '1' ? '64818429810443264' : value;
+          value = value === '1' ? '65504470699607040' : value;
         }
-        obj[key] = key === value;
+        obj[key] = value;
       });
       return obj;
     });
-    console.log(result, 22);
 
     const list = await this.feedRecordModel.save(result);
     return list;
