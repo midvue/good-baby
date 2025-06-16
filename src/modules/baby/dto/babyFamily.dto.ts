@@ -7,7 +7,7 @@ export class BabyFamilyDTO {
     example: '1',
     description: '家庭id',
   })
-  id: number;
+  id: string;
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({
@@ -25,7 +25,7 @@ export class BabyFamilyListDTO extends BabyFamilyDTO {
     example: '1',
     description: '用户id',
   })
-  userId: number;
+  userId: string;
 }
 
 export class BabyFamilyUpdateDTO extends BabyFamilyDTO {
@@ -34,7 +34,7 @@ export class BabyFamilyUpdateDTO extends BabyFamilyDTO {
     example: 1,
     description: 'id',
   })
-  id: number;
+  id: string;
 }
 
 export class BabyFamilyPageDTO extends BabyFamilyUpdateDTO {

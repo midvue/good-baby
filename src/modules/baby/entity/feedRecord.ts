@@ -1,20 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
-import { BaseEntity } from '../../base/base.entity';
+import { Column, Entity, Index } from 'typeorm';
+import { SnowIdBaseEntity } from '../../base/base.entity';
 
 /**
  * 宝宝喂养记录
  */
 @Entity('baby_feed_record', { comment: '宝宝喂养记录' })
 @Index('uk_complex_time_baby', ['feedTime', 'babyId', 'feedType'])
-export class FeedRecord extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class FeedRecord extends SnowIdBaseEntity {
   @Column({ name: 'baby_id', comment: '宝宝id' })
-  babyId: number;
+  babyId: string;
 
   @Column({ name: 'create_id', comment: '创建人id' })
-  createId: number;
+  createId: string;
 
   @Column({ name: 'feed_type', comment: '喂养类型', type: 'tinyint' })
   feedType: number;

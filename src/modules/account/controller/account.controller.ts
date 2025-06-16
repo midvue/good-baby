@@ -68,7 +68,7 @@ export class AccountController extends BaseController {
   @Del('/delete')
   @Validate()
   @ApiOperation({ summary: '删除' })
-  async delete(@Query('id') id: number) {
+  async delete(@Query('id') id: string) {
     const res = await this.accountService.delete(id);
     return this.success(res);
   }

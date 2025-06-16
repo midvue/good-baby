@@ -11,11 +11,11 @@ export class AccountBabyFamily {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'user_id', comment: '用户id', nullable: false })
-  userId: number;
+  @Column({ name: 'user_id', comment: '用户id', nullable: false, length: 32 })
+  userId: string;
 
-  @Column({ name: 'family_id', comment: '家庭id', nullable: false })
-  familyId: number;
+  @Column({ name: 'family_id', comment: '家庭id', nullable: false, length: 32 })
+  familyId: string;
 
   @Column({
     length: 2,

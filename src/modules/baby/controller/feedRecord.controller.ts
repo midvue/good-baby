@@ -13,7 +13,6 @@ import { Validate } from '@midwayjs/validate';
 import { BaseController } from '../../base/base.controller';
 import {
   FeedRecordCreateDTO,
-  FeedRecordDTO,
   FeedRecordPageDTO,
   FeedRecordUpdateDTO,
   LatestFeedRecordDto,

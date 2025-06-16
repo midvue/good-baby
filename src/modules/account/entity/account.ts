@@ -1,14 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
-import { BaseEntity } from '../../base/base.entity';
+import { BaseEntity, SnowIdBaseEntity } from '../../base/base.entity';
 
 /**
  * 用户端账号表
  */
 @Entity('app_account')
-export class Account extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Account extends SnowIdBaseEntity {
   @Index('uk_account', { unique: true })
   @Column({ comment: '账号', length: 32, default: null })
   account: string;

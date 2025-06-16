@@ -52,9 +52,9 @@ export class AccountService extends BaseService {
       where: { openid: session.openid },
     });
     if (!info) {
-      info = await this.accountModel.save({
-        openid: session.openid,
-      });
+      info = await this.accountModel.save(
+        Object.assign(new Account(), { openid: session.openid })
+      );
     }
     const token = await this.jwtService.sign({ id: info.id });
     return { token };
@@ -79,7 +79,7 @@ export class AccountService extends BaseService {
 
     return { list, count };
   }
-  async info(id: number) {
+  async info(id: string) {
     const res = await Promise.all([
       this.accountModel.findOne({
         select: [
@@ -102,7 +102,9 @@ export class AccountService extends BaseService {
   }
 
   async create(inDto: AccountCreateDTO) {
-    const { id } = await this.accountModel.save(inDto);
+    const { id } = await this.accountModel.save(
+      Object.assign(new Account(), inDto)
+    );
     return { id };
   }
 
@@ -110,7 +112,7 @@ export class AccountService extends BaseService {
     return await this.accountModel.update(upDto.id, upDto);
   }
 
-  async delete(id: number) {
+  async delete(id: string) {
     return await this.accountModel.delete(id);
   }
 }

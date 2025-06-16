@@ -7,11 +7,14 @@ export class PointsSummary extends BaseEntity {
   id: number;
 
   @Column({ comment: '用户ID' })
-  userId: number;
+  userId: string;
 
   @Column({ comment: '统计日期，格式为 YYYY-MM-DD' })
   date: string;
 
-  @Column({ comment: '当日积分总和' })
+  @Column({ comment: '积分总和', default: 0, name: 'total_points' })
   totalPoints: number;
+
+  @Column({ comment: '今日积分', default: 0, name: 'today_points' })
+  todayPoints: number;
 }

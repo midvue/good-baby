@@ -1,16 +1,13 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { BaseEntity } from '../../base/base.entity';
+import { BaseEntity, SnowIdBaseEntity } from '../../base/base.entity';
 
 /**
  * 宝宝管理
  */
 @Entity('baby', { comment: '宝宝管理' })
-export class Baby extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Baby extends SnowIdBaseEntity {
   @Column({ name: 'family_id', comment: '家庭id' })
-  familyId: number;
+  familyId: string;
 
   @Column({ comment: '昵称', length: 32 })
   nickname: string;

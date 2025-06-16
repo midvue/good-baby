@@ -14,7 +14,7 @@ export class PointsRuleService extends BaseService {
    * 分页查询积分规则
    * @param dto 分页查询参数
    */
-  async getPage(dto: PointsRulePageDTO) {
+  async page(dto: PointsRulePageDTO) {
     const [list, total] = await this.pointsRuleModel.findAndCount({
       skip: (dto.current - 1) * dto.size,
       take: dto.size,
