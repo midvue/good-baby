@@ -15,7 +15,7 @@ export const dateTransformer = {
     }
     return value;
   },
-  to: () => new Date(),
+  to: value => new Date(value),
 };
 
 /** 雪花ID */
