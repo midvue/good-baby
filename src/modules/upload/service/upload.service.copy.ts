@@ -84,13 +84,13 @@ export class UploadService extends BaseService {
         getDatas: datas => {
           return datas.map(item => {
             const obj = new FeedRecord();
-            let feedTime = item[0];
+            let feedTime = useDate(item[0]).format('YYYY-MM-DD HH:mm:ss');
             let month = useDate(feedTime).format('M');
             return Object.assign(obj, {
               feedTime,
               feedType: 10,
               babyId: '65504853031388160',
-              createId: month <= 2 ? '65504470699607040' : '65520915693175808',
+              createId: +month <= 2 ? '65504470699607040' : '65520915693175808',
               content: {
                 type: 10,
                 volume: item[2],
@@ -108,13 +108,13 @@ export class UploadService extends BaseService {
         getDatas: datas => {
           return datas.map(item => {
             const obj = new FeedRecord();
-            let feedTime = item[0];
+            let feedTime = useDate(item[0]).format('YYYY-MM-DD HH:mm:ss');
             let month = useDate(feedTime).format('M');
             return Object.assign(obj, {
               feedTime,
               feedType: 30,
               babyId: '65504853031388160',
-              createId: month <= 2 ? '65504470699607040' : '65520915693175808',
+              createId: +month <= 2 ? '65504470699607040' : '65520915693175808',
               content: {
                 feedTime,
                 diaperType: diaperTypeMap[item[1]] || '10',
@@ -137,7 +137,6 @@ export class UploadService extends BaseService {
       }
       return acc;
     }, []);
-    console.log(values);
 
     const list = await this.feedRecordModel.save(values);
     return values;

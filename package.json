@@ -15,7 +15,7 @@
     "@midwayjs/logger": "^3.1.0",
     "@midwayjs/redis": "^3.20.4",
     "@midwayjs/static-file": "3.20.5",
-    "@midwayjs/swagger": "3.20.4",
+    "@midwayjs/swagger": "3.20.6",
     "@midwayjs/typeorm": "3.20.4",
     "@midwayjs/validate": "^3.20.4",
     "dotenv": "^16.5.0",

@@ -42,8 +42,8 @@ importers:
         specifier: 3.20.5
         version: 3.20.5
       '@midwayjs/swagger':
-        specifier: 3.20.4
-        version: 3.20.4
+        specifier: 3.20.6
+        version: 3.20.6
       '@midwayjs/typeorm':
         specifier: 3.20.4
         version: 3.20.4
@@ -487,8 +487,8 @@ packages:
     resolution: {integrity: sha512-EjEmqi1Qw3ob0J+UkMdd8T2zrnHTI3bgGTr+ZmXpRcRSGbJMgYU2T50PSCMFS6C8W07iz6cHO2jt4/Hiq9p2OQ==}
     engines: {node: '>=12'}
 
-  '@midwayjs/swagger@3.20.4':
-    resolution: {integrity: sha512-DEfjVcwJmywtCVUxbiS1NK0apvb89Al2DX5E98lkYtd0yUlQkksLp4K5vP8gmM3qzUoyALOBbxM+rI+g4h8OCw==}
+  '@midwayjs/swagger@3.20.6':
+    resolution: {integrity: sha512-MAkdllI4pKJct7W4QyZ/DiEKQW1nXs2Uc+FvlS60D5brnI4nOakgy/iUAq2RK/tql6mE66LlxnJNjqg7NzQOhQ==}
 
   '@midwayjs/typeorm@3.20.4':
     resolution: {integrity: sha512-sf+inpoHGZIWbhUYR7O0ItqUyW4e2eKyxdpxnA86U0jtaHP7JszAg71rVQ8u/BthEzgI4FtQEUShRUOR7DB4FQ==}
@@ -3730,7 +3730,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@midwayjs/swagger@3.20.4': {}
+  '@midwayjs/swagger@3.20.6': {}
 
   '@midwayjs/typeorm@3.20.4': {}
 

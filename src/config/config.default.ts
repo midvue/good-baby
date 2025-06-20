@@ -45,6 +45,7 @@ export default (appInfo: MidwayAppInfo) => {
       description: 'good baby 宝宝成长系统',
       auth: {
         authType: 'bearer',
+        addSecurityRequirements: true,
       },
     },
     snowflake: {

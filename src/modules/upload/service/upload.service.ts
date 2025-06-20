@@ -64,12 +64,17 @@ export class UploadService extends BaseService {
         } else if (key === 'createId') {
           value = value === '3' ? '65520915693175808' : value;
         }
+        if (key === 'content') {
+          value = JSON.parse(value);
+        }
         obj[key] = value;
       });
       return obj;
     });
 
+    console.log(result);
+
     const list = await this.feedRecordModel.save(result);
-    return list;
+    return result;
   }
 }
