@@ -74,7 +74,7 @@ export class BabyCreateDTO extends BabyDTO {
   })
   familyId: string;
 
-  @Rule(RuleType.string().required())
+  @Rule(RuleType.string())
   @ApiProperty({
     example: '100',
     description: '妈妈',

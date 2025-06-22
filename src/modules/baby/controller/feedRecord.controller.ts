@@ -13,6 +13,7 @@ import { Validate } from '@midwayjs/validate';
 import { BaseController } from '../../base/base.controller';
 import {
   FeedRecordCreateDTO,
+  FeedRecordDTO,
   FeedRecordPageDTO,
   FeedRecordUpdateDTO,
   LatestFeedRecordDto,
@@ -29,15 +30,22 @@ export class FeedRecordController extends BaseController {
 
   @Post('/page')
   @ApiOperation({ summary: '分页获取列表' })
-  async page(@Body() userDto: FeedRecordPageDTO) {
-    const res = await this.feedRecordService.page(userDto);
+  async page(@Body() feedDto: FeedRecordPageDTO) {
+    const res = await this.feedRecordService.page(feedDto);
     return this.success(res);
   }
 
   @Post('/list')
   @ApiOperation({ summary: '获取列表' })
-  async list(@Body() userDto: FeedRecordUpdateDTO) {
-    const res = await this.feedRecordService.list(userDto);
+  async list(@Body() feedDto: FeedRecordUpdateDTO) {
+    const res = await this.feedRecordService.list(feedDto);
+    return this.success(res);
+  }
+
+  @Post('/days')
+  @ApiOperation({ summary: '获取当前用户喂养数据的天数' })
+  async days(@Body() feedDto: FeedRecordDTO) {
+    const res = await this.feedRecordService.days(feedDto);
     return this.success(res);
   }
 

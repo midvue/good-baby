@@ -29,7 +29,7 @@ export class AccountBabyFamily {
     length: 8,
     name: 'relation',
     comment: '关系身份(200:爸爸,100:妈妈) 字典:FAMILY_RELATION',
-    nullable: false,
+    default: '100',
   })
   relation: string;
 }

@@ -65,6 +65,21 @@ export class FeedRecordService extends BaseService {
     return list;
   }
 
+  async days(options: FeedRecordDTO) {
+    let { startFeedTime, endFeedTime } = options;
+    endFeedTime = endFeedTime || minute(Date.now());
+
+    const list = await this.feedRecordModel.find({
+      select: ['feedTime'],
+      where: {
+        feedTime: Between(startFeedTime, endFeedTime),
+      },
+    });
+    console.log(list);
+
+    return list;
+  }
+
   /**
    * 获取指定 babyId 的最新喂养记录
    * @param babyId 宝宝 ID
