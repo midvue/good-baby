@@ -25,19 +25,8 @@ export class PointsRecordService extends BaseService {
    * @param dto 分页查询参数
    */
   async page(dto: PointsRecordPageDTO) {
-    const [start, end] = useDate().getDateRange(dto.startDate, dto.endDate);
-    const [list, total] = await this.pointsRecordModel.findAndCount({
-      where: {
-        userId: dto.userId,
-        createTime:
-          dto.startDate && dto.endDate ? Between(start, end) : undefined,
-      },
-      relations: ['rule'],
-      skip: (dto.current - 1) * dto.size,
-      take: dto.size,
-      order: { createTime: 'DESC' },
-    });
-    return { list, total };
+    const { startDate, endDate } = dto;
+    return {};
   }
 
   /** 获取积分记录列表 */

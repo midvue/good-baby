@@ -1,4 +1,4 @@
-import { minute } from '@mid-vue/shared';
+import { minute, useDate, useNumber } from '@mid-vue/shared';
 import { Inject, Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Between, In, Repository } from 'typeorm';
@@ -68,16 +68,38 @@ export class FeedRecordService extends BaseService {
   async days(options: FeedRecordDTO) {
     let { startFeedTime, endFeedTime } = options;
     endFeedTime = endFeedTime || minute(Date.now());
+    //起始时间与结束时间间隔不能大于42天,
+    let startDate = useDate(startFeedTime);
+    let endDate = useDate(endFeedTime);
+    let durationDays = endDate.diff(startDate, 'day');
 
+    if (durationDays > 42) {
+      return this.commError('起始时间与结束时间间隔不能大于42天');
+    }
     const list = await this.feedRecordModel.find({
       select: ['feedTime'],
       where: {
         feedTime: Between(startFeedTime, endFeedTime),
       },
     });
-    console.log(list);
+    // 对查询的结果去重,汇总次数
+    // 使用 reduce 和对象 key 的唯一性进行去重并统计每天的记录数
+    const dateCountMap = list.reduce((map, item) => {
+      const date = useDate(item.feedTime).format('YYYY-MM-DD');
+      map[date] = (map[date] || 0) + 1;
+      return map;
+    }, {} as Record<string, number>);
 
-    return list;
+    // 遍历起始和结束日期天数差,补充(不连续)缺失的日期,count设为0
+    const result = [];
+    for (let i = 0; i <= durationDays; i++) {
+      const date = startDate.add(i, 'day').format('YYYY-MM-DD');
+      result.push({
+        date,
+        count: dateCountMap[date] || 0,
+      });
+    }
+    return result;
   }
 
   /**

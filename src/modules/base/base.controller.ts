@@ -1,6 +1,7 @@
 import { ILogger, ResOrMessage, Inject } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { CommHttpError } from '../../error/comm.error';
+import { EnumRespCode } from '../../constants/errorCode';
 
 export abstract class BaseController {
   @Inject()
@@ -15,7 +16,11 @@ export abstract class BaseController {
    * @param message 响应msg
    * @param code  响应自定义状态码
    */
-  protected success(data = null, code = 0, message = 'success') {
+  protected success(
+    data = null,
+    code = EnumRespCode.SUCCESS,
+    message = 'success'
+  ) {
     this.ctx.status = 200;
     this.ctx.body = {
       code: code,

@@ -5,7 +5,6 @@ import { BaseService } from '../../base/base.service';
 import { MenuService } from './menu.service';
 import { Role } from '../entity/role';
 import { RoleMenu } from '../entity/roleMenu';
-import { httpCode } from '../../../constants/errorCode';
 import {
   RoleCreateDTO,
   RoleMenuUpDTO,
@@ -13,6 +12,7 @@ import {
   RoleUpdateDTO,
   RoleUpStatusDTO,
 } from '../dto/role.dto';
+import { EnumRespCode } from '../../../constants/errorCode';
 
 @Provide()
 export class RoleService extends BaseService {
@@ -61,7 +61,7 @@ export class RoleService extends BaseService {
   }
 
   async info(id: number) {
-    if (!id) return this.commError(httpCode.CODE_1000);
+    if (!id) return this.commError(EnumRespCode.MISSING_PARAMETER);
     const info = await this.roleModel.findOne({ where: { id } });
     return info;
   }

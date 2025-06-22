@@ -1,11 +1,11 @@
 import { HttpStatus, MidwayHttpError } from '@midwayjs/core';
 import type { ResOrMessage } from '@midwayjs/core';
-import { codeMap } from '../constants/errorCode';
+import { RespCodeMap } from '../constants/errorCode';
 
 export class CommHttpError extends MidwayHttpError {
   constructor(code: number, resOrMessage?: ResOrMessage) {
     if (!resOrMessage) {
-      resOrMessage = codeMap[code];
+      resOrMessage = RespCodeMap[code];
     }
     super(resOrMessage, HttpStatus.OK, code + '');
   }
