@@ -1,17 +1,17 @@
+import { EnumYesNoPlus } from '@mid-vue/shared';
 import { Inject, Provide } from '@midwayjs/core';
 import { InjectEntityModel, TypeORMDataSourceManager } from '@midwayjs/typeorm';
 import { In, Like, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
 import {
   BabyCreateDTO,
-  BabyDTO,
   BabyListDTO,
   BabyPageDTO,
   BabyUpdateDTO,
 } from '../dto/baby.dto';
+import { AccountBabyFamily } from '../entity/accountBabyFamily';
 import { Baby } from '../entity/baby';
 import { BabyFamily } from '../entity/babyFamily';
-import { AccountBabyFamily } from '../entity/accountBabyFamily';
 
 @Provide()
 export class BabyService extends BaseService {
@@ -68,14 +68,14 @@ export class BabyService extends BaseService {
   async addFoster(dto: BabyCreateDTO) {
     const { id } = await this.accountBabyFamilyModel.save({
       ...dto,
-      role: '20',
+      role: EnumYesNoPlus.NO,
     });
 
     return { id };
   }
 
   async create(dto: BabyCreateDTO) {
-    let { userId, familyId, ...baby } = dto;
+    let { userId, familyId, relation, ...baby } = dto;
 
     const dataSource = this.dataSourceMgr.getDataSource('default');
     const res = await dataSource.transaction(async transMgr => {
@@ -86,7 +86,12 @@ export class BabyService extends BaseService {
           Object.assign(new BabyFamily(), { name: baby.nickname })
         );
         familyId = id;
-        transMgr.save(AccountBabyFamily, { userId, familyId, role: '10' });
+        transMgr.save(AccountBabyFamily, {
+          userId,
+          familyId,
+          role: EnumYesNoPlus.YES,
+          relation,
+        });
       }
       return await transMgr.save(
         Baby,

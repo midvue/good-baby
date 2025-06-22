@@ -22,12 +22,19 @@ export class DictDTO {
     description: '字典code数组',
   })
   codes: string[];
+
+  @Rule(RuleType.string().allow(''))
+  @ApiProperty({
+    example: 'REMARK',
+    description: '字典备注',
+  })
+  remark: string;
 }
 
 export class DictCreateDTO extends DictDTO {
   @Rule(RuleType.string().required())
   @ApiProperty({
-    example: 'dict_gender',
+    example: 'DICT_GENDER',
     description: '性别字典code',
   })
   code: string;

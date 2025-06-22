@@ -4,14 +4,14 @@ import { Rule, RuleType } from '@midwayjs/validate';
 export class BabyDTO {
   @Rule(RuleType.string().allow(''))
   @ApiProperty({
-    example: 'gender',
+    example: '10',
     description: '性别',
   })
   gender: '10' | '20';
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({
-    example: '',
+    example: '测试',
     description: '昵称',
   })
   nickname: string;
@@ -25,14 +25,14 @@ export class BabyDTO {
 
   @Rule(RuleType.number().allow(''))
   @ApiProperty({
-    example: 'gender',
+    example: '3.3',
     description: '体重',
   })
   weight: number;
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({
-    example: '2025-12-18',
+    example: '2024-12-18',
     description: '出生日期',
   })
   birthDate: string;
@@ -46,10 +46,17 @@ export class BabyDTO {
 
   @Rule(RuleType.string().allow('').empty(null))
   @ApiProperty({
-    example: 'https://',
+    example: '',
     description: '头像',
   })
   avatar: string;
+
+  @Rule(RuleType.string().allow('').empty(null))
+  @ApiProperty({
+    example: '100',
+    description: '妈妈',
+  })
+  relation: string;
 }
 
 export class BabyCreateDTO extends BabyDTO {
@@ -66,6 +73,13 @@ export class BabyCreateDTO extends BabyDTO {
     description: '自己创建的家庭id',
   })
   familyId: string;
+
+  @Rule(RuleType.string().required())
+  @ApiProperty({
+    example: '100',
+    description: '妈妈',
+  })
+  relation: string;
 }
 
 export class BabyListDTO extends BabyDTO {
