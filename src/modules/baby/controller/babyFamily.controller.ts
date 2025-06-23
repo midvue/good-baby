@@ -14,6 +14,7 @@ import { BaseController } from '../../base/base.controller';
 import {
   BabyFamilyCreateDTO,
   BabyFamilyDTO,
+  BabyFamilyIdDTO,
   BabyFamilyListDTO,
   BabyFamilyPageDTO,
   BabyFamilyUpdateDTO,
@@ -36,6 +37,7 @@ export class BabyFamilyController extends BaseController {
   }
 
   @Post('/list')
+  @Validate()
   @ApiOperation({ summary: '获取列表' })
   async list(@Body() dto: BabyFamilyListDTO) {
     dto.userId = dto.userId || this.ctx.uid;
@@ -48,6 +50,14 @@ export class BabyFamilyController extends BaseController {
   async info(@Query('id') id: number) {
     const uid = id || this.ctx.uid;
     const res = await this.babyFamilyService.info(uid);
+    return this.success(res);
+  }
+
+  @Post('/relation')
+  @Validate()
+  @ApiOperation({ summary: '获取家庭关系' })
+  async relation(babyDto: BabyFamilyIdDTO) {
+    const res = await this.babyFamilyService.relation(babyDto);
     return this.success(res);
   }
 

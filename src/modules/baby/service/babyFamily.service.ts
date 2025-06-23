@@ -5,6 +5,7 @@ import { BaseService } from '../../base/base.service';
 import {
   BabyFamilyCreateDTO,
   BabyFamilyDTO,
+  BabyFamilyIdDTO,
   BabyFamilyListDTO,
   BabyFamilyPageDTO,
   BabyFamilyUpdateDTO,
@@ -58,6 +59,12 @@ export class BabyFamilyService extends BaseService {
   async info(id: string) {
     const info = await this.babyFamilyModel.findOne({ where: { id } });
     return info;
+  }
+  async relation(dto: BabyFamilyIdDTO) {
+    const list = await this.accountBabyFamilyModel.find({
+      where: { familyId: dto.id },
+    });
+    return list;
   }
 
   async create(inDto: BabyFamilyCreateDTO) {

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@midwayjs/swagger';
-import { Rule, RuleType } from '@midwayjs/validate';
+import { PickDto, Rule, RuleType } from '@midwayjs/validate';
 
 export class BabyFamilyDTO {
   @Rule(RuleType.number().allow(''))
@@ -33,6 +33,15 @@ export class BabyFamilyUpdateDTO extends BabyFamilyDTO {
   @ApiProperty({
     example: 1,
     description: 'id',
+  })
+  id: string;
+}
+
+export class BabyFamilyIdDTO {
+  @Rule(RuleType.number().required())
+  @ApiProperty({
+    example: 65504852926530560,
+    description: 'familyId',
   })
   id: string;
 }
