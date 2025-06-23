@@ -29,19 +29,19 @@ export class BabyFamilyListDTO extends BabyFamilyDTO {
 }
 
 export class BabyFamilyUpdateDTO extends BabyFamilyDTO {
-  @Rule(RuleType.number().allow(''))
+  @Rule(RuleType.string().required())
   @ApiProperty({
-    example: 1,
+    example: '65504852926530560',
     description: 'id',
   })
   id: string;
 }
 
 export class BabyFamilyIdDTO {
-  @Rule(RuleType.number().required())
+  @Rule(RuleType.string().required())
   @ApiProperty({
-    example: 65504852926530560,
-    description: 'familyId',
+    example: '65504852926530560',
+    description: 'id',
   })
   id: string;
 }

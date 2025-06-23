@@ -56,8 +56,8 @@ export class BabyFamilyController extends BaseController {
   @Post('/relation')
   @Validate()
   @ApiOperation({ summary: '获取家庭关系' })
-  async relation(babyDto: BabyFamilyIdDTO) {
-    const res = await this.babyFamilyService.relation(babyDto);
+  async relation(@Body() dto: BabyFamilyIdDTO) {
+    const res = await this.babyFamilyService.relation(dto);
     return this.success(res);
   }
 
