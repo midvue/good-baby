@@ -75,10 +75,18 @@ export class BabyService extends BaseService {
   }
 
   async create(dto: BabyCreateDTO) {
-    let { userId, familyId, relation, ...baby } = dto;
+    let { userId, relation, ...baby } = dto;
 
     const dataSource = this.dataSourceMgr.getDataSource('default');
     const res = await dataSource.transaction(async transMgr => {
+      // 先查询是否有自己创建的家庭
+      let { familyId } = await transMgr.findOne(AccountBabyFamily, {
+        select: ['familyId'],
+        where: {
+          userId,
+          role: EnumYesNoPlus.YES,
+        },
+      });
       //没有家庭id,先创建家庭
       if (!familyId) {
         let { id } = await transMgr.save(
