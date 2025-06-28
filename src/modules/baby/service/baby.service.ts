@@ -50,13 +50,23 @@ export class BabyService extends BaseService {
   }
 
   async list(dto: BabyListDTO) {
-    let aFamilyList = await this.accountBabyFamilyModel.find({
-      where: { userId: dto.userId },
-    });
-    let familyIds = aFamilyList.map(item => item.familyId);
-    const list = await this.babyModel.find({
-      where: { familyId: In(familyIds) },
-    });
+    const list = await this.accountBabyFamilyModel
+      .createQueryBuilder('a')
+      .leftJoin(Baby, 'b', 'a.familyId = b.familyId')
+      .where('a.userId = :userId', { userId: dto.userId })
+      .select([
+        'a.relation AS relation',
+        'a.role AS role',
+        'a.familyId AS familyId',
+        'b.nickname AS nickname',
+        'b.avatar AS avatar',
+        'b.gender AS gender',
+        'b.height AS height',
+        'b.weight AS weight',
+        'b.birthDate AS birthDate',
+        'b.birthTime AS birthTime',
+      ])
+      .getRawMany();
     return list;
   }
   async info(id: string) {
@@ -64,7 +74,7 @@ export class BabyService extends BaseService {
     return info;
   }
 
-  /** 添加协助者 */
+  /** 添加协助喂养人 */
   async addFoster(dto: BabyCreateDTO) {
     const { id } = await this.accountBabyFamilyModel.save({
       ...dto,

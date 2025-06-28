@@ -12,11 +12,11 @@ export class Baby extends SnowIdBaseEntity {
   @Column({ comment: '昵称', length: 32 })
   nickname: string;
 
-  @Column({ comment: '年龄', default: 0 })
-  age: number;
-
   @Column({ length: 2, comment: '性别- 20:男性,10:女性', default: 'x' })
   gender: string;
+
+  @Column({ type: 'int', comment: '身高', default: 0 })
+  height: number;
 
   @Column({ type: 'int', comment: '体重', default: 0 })
   weight: number;
