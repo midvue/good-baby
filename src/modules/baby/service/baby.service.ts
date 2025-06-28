@@ -58,6 +58,7 @@ export class BabyService extends BaseService {
         'a.relation AS relation',
         'a.role AS role',
         'a.familyId AS familyId',
+        'b.id AS id',
         'b.nickname AS nickname',
         'b.avatar AS avatar',
         'b.gender AS gender',
@@ -76,6 +77,15 @@ export class BabyService extends BaseService {
 
   /** 添加协助喂养人 */
   async addFoster(dto: BabyCreateDTO) {
+    const { familyId } = await this.accountBabyFamilyModel.findOne({
+      select: ['familyId'],
+      where: {
+        userId: dto.userId,
+      },
+    });
+    if (familyId === dto.familyId) {
+      return this.commError('您已经加入该家庭');
+    }
     const { id } = await this.accountBabyFamilyModel.save({
       ...dto,
       role: EnumYesNoPlus.NO,
