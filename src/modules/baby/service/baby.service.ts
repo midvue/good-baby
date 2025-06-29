@@ -1,4 +1,4 @@
-import { EnumYesNoPlus } from '@mid-vue/shared';
+import { EnumYesNoPlus, useDate } from '@mid-vue/shared';
 import { Inject, Provide } from '@midwayjs/core';
 import { InjectEntityModel, TypeORMDataSourceManager } from '@midwayjs/typeorm';
 import { In, Like, Repository } from 'typeorm';
@@ -133,39 +133,45 @@ export class BabyService extends BaseService {
     let userId = this.ctx.uid;
     let { relation, ...babyDto } = upDto;
 
-    this.logger.info(upDto, 2);
+    //根据userId我当前的关系
+    let selfInfo = await this.accountBabyFamilyModel.findOne({
+      select: ['id', 'relation', 'userId', 'role', 'familyId'],
+      where: {
+        userId,
+        role: EnumYesNoPlus.YES,
+      },
+    });
+    // 校验是否是创建人
+    if (selfInfo.familyId !== babyDto.familyId) {
+      return this.commError('您不是创建人 ,无法更新宝宝信息');
+    }
 
-    // 先查询宝宝已有的爸妈的关系信息
-    let aBabyFamilyArr = await this.accountBabyFamilyModel.find({
-      select: ['relation', 'userId', 'role'],
+    // 查询目标关系对应的信息
+    let otherInfo = await this.accountBabyFamilyModel.findOne({
+      select: ['id', 'relation', 'userId', 'role'],
       where: {
         familyId: babyDto.familyId,
-        /** 爸爸,妈妈 */
-        relation: In(['100', '200']),
+        /** 查询目标关系是否有用户 */
+        relation,
       },
     });
 
     // 获取自己是否创建者,创建者才能更新宝宝信息
-    let selfIndex = aBabyFamilyArr.findIndex(item => item.userId === userId);
-    let selfInfo = aBabyFamilyArr[selfIndex];
-    if (selfInfo?.role !== EnumYesNoPlus.YES) {
-      return this.commError('您不是创建人 ,无法更新宝宝信息');
-    }
-
     const dataSource = this.dataSourceMgr.getDataSource('default');
     const res = await dataSource.transaction(async transMgr => {
       // 如果修改关系,则互换爸妈的角色
       if (selfInfo.relation !== relation) {
-        // 先修改自己的关系
+        // 如果目标关系有用户,则互换角色
+        if (otherInfo.id) {
+          transMgr.update(AccountBabyFamily, otherInfo.id, {
+            ...otherInfo,
+            relation: selfInfo.relation,
+          });
+        }
+        // 修改自己的关系
         transMgr.update(AccountBabyFamily, selfInfo.id, {
           ...selfInfo,
           relation,
-        });
-        // 再修改对方的关系
-        let otherInfo = aBabyFamilyArr[1 - selfIndex];
-        transMgr.update(AccountBabyFamily, otherInfo.id, {
-          ...otherInfo,
-          relation: selfInfo.relation,
         });
       }
       return await transMgr.update(Baby, upDto.id, babyDto);

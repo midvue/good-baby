@@ -60,6 +60,8 @@ export class BabyFamilyService extends BaseService {
     const info = await this.babyFamilyModel.findOne({ where: { id } });
     return info;
   }
+
+  /** 获取家庭关联信息 */
   async relation(dto: BabyFamilyIdDTO) {
     const list = await this.accountBabyFamilyModel.find({
       where: { familyId: dto.id },
