@@ -72,8 +72,8 @@ export class BabyController extends BaseController {
   @Put('/update')
   @Validate()
   @ApiOperation({ summary: '更新' })
-  async update(@Body() baby: BabyUpdateDTO) {
-    const res = await this.babyService.update(baby);
+  async update(@Body() dto: BabyUpdateDTO) {
+    const res = await this.babyService.update(dto);
     return this.success(res);
   }
 

@@ -52,7 +52,7 @@ export class BabyService extends BaseService {
   async list(dto: BabyListDTO) {
     const list = await this.accountBabyFamilyModel
       .createQueryBuilder('a')
-      .leftJoin(Baby, 'b', 'a.familyId = b.familyId')
+      .innerJoin(Baby, 'b', 'a.familyId = b.familyId')
       .where('a.userId = :userId', { userId: dto.userId })
       .select([
         'a.relation AS relation',
@@ -130,7 +130,48 @@ export class BabyService extends BaseService {
   }
 
   async update(upDto: BabyUpdateDTO) {
-    return await this.babyModel.update(upDto.id, upDto);
+    let userId = this.ctx.uid;
+    let { relation, ...babyDto } = upDto;
+
+    this.logger.info(upDto, 2);
+
+    // 先查询宝宝已有的爸妈的关系信息
+    let aBabyFamilyArr = await this.accountBabyFamilyModel.find({
+      select: ['relation', 'userId', 'role'],
+      where: {
+        familyId: babyDto.familyId,
+        /** 爸爸,妈妈 */
+        relation: In(['100', '200']),
+      },
+    });
+
+    // 获取自己是否创建者,创建者才能更新宝宝信息
+    let selfIndex = aBabyFamilyArr.findIndex(item => item.userId === userId);
+    let selfInfo = aBabyFamilyArr[selfIndex];
+    if (selfInfo?.role !== EnumYesNoPlus.YES) {
+      return this.commError('您不是创建人 ,无法更新宝宝信息');
+    }
+
+    const dataSource = this.dataSourceMgr.getDataSource('default');
+    const res = await dataSource.transaction(async transMgr => {
+      // 如果修改关系,则互换爸妈的角色
+      if (selfInfo.relation !== relation) {
+        // 先修改自己的关系
+        transMgr.update(AccountBabyFamily, selfInfo.id, {
+          ...selfInfo,
+          relation,
+        });
+        // 再修改对方的关系
+        let otherInfo = aBabyFamilyArr[1 - selfIndex];
+        transMgr.update(AccountBabyFamily, otherInfo.id, {
+          ...otherInfo,
+          relation: selfInfo.relation,
+        });
+      }
+      return await transMgr.update(Baby, upDto.id, babyDto);
+    });
+
+    return res;
   }
 
   async delete(id: string) {

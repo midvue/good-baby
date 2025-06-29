@@ -18,10 +18,10 @@ export class BabyDTO {
 
   @Rule(RuleType.number().allow(''))
   @ApiProperty({
-    example: '20',
-    description: '年龄',
+    example: 1,
+    description: '家庭id',
   })
-  age: number;
+  familyId: string;
 
   @Rule(RuleType.number().allow(''))
   @ApiProperty({
@@ -67,13 +67,6 @@ export class BabyCreateDTO extends BabyDTO {
   })
   userId: string;
 
-  @Rule(RuleType.string().allow('').empty(''))
-  @ApiProperty({
-    example: 1,
-    description: '自己创建的家庭id',
-  })
-  familyId: string;
-
   @Rule(RuleType.string())
   @ApiProperty({
     example: '100',
@@ -93,25 +86,25 @@ export class BabyListDTO extends BabyDTO {
   @Rule(RuleType.number().allow(''))
   @ApiProperty({
     example: 1,
-    description: '家庭id',
-  })
-  familyId: string;
-
-  @Rule(RuleType.number().allow(''))
-  @ApiProperty({
-    example: 1,
     description: '当前账号id',
   })
   userId: string;
 }
 
 export class BabyUpdateDTO extends BabyDTO {
-  @Rule(RuleType.string().allow(''))
+  @Rule(RuleType.string().required())
   @ApiProperty({
     example: 1,
     description: 'id',
   })
   id: string;
+
+  @Rule(RuleType.string().required())
+  @ApiProperty({
+    example: 1,
+    description: '宝宝家庭id',
+  })
+  familyId: string;
 }
 
 export class BabyPageDTO extends BabyUpdateDTO {
