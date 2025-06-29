@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@mid-vue/shared':
-        specifier: ^0.0.3
-        version: 0.0.3
+        specifier: ^0.0.5
+        version: 0.0.5
       '@midwayjs/bootstrap':
         specifier: ^3.20.4
         version: 3.20.4
@@ -417,8 +417,8 @@ packages:
     resolution: {integrity: sha512-sYcHglGKTxGF+hQ6x67xDfkE9o+NhVlRHBqq6gLywaMc6CojK/5vFZByphdonKinYlMLkEkacm+HEse9HzwgTA==}
     engines: {node: '>= 12'}
 
-  '@mid-vue/shared@0.0.3':
-    resolution: {integrity: sha512-BRr30CSP68SK55Y0ffCyET2UztdT+0at/p9bycbnaXxbtotQNpqrzf17IUFipfqxiDT0nGvk2x0Xbr+E/MfiOw==}
+  '@mid-vue/shared@0.0.5':
+    resolution: {integrity: sha512-01+YBKdnR4n8TeqSZ7pzS8cnvNFCwOJHyVUlIjuIYcTuo8/wNkPwhks5Zt3QHMTQJnYNcNVPQ0vtgsrOXKzBCA==}
 
   '@midwayjs/async-hooks-context-manager@3.20.4':
     resolution: {integrity: sha512-t1Jq+Ykjgk6kDHckMAS5XhQ0wp70hN9tkeXLMqIDQxu1cuNTZnZ8j16cFTXuQRcIB0cprCf3fHrsVlHEAYJVEg==}
@@ -3629,7 +3629,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mid-vue/shared@0.0.3':
+  '@mid-vue/shared@0.0.5':
     dependencies:
       '@types/big.js': 6.2.2
       '@types/js-cookie': 3.0.6
