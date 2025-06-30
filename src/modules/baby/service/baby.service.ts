@@ -95,21 +95,22 @@ export class BabyService extends BaseService {
   }
 
   async create(dto: BabyCreateDTO) {
-    let { userId, relation, ...baby } = dto;
+    const { userId, relation, ...baby } = dto;
 
     const dataSource = this.dataSourceMgr.getDataSource('default');
     const res = await dataSource.transaction(async transMgr => {
       // 先查询是否有自己创建的家庭
-      let { familyId } = await transMgr.findOne(AccountBabyFamily, {
-        select: ['familyId'],
-        where: {
-          userId,
-          role: EnumYesNoPlus.YES,
-        },
-      });
+      let { familyId } =
+        (await transMgr.findOne(AccountBabyFamily, {
+          select: ['familyId'],
+          where: {
+            userId,
+            role: EnumYesNoPlus.YES,
+          },
+        })) || {};
       //没有家庭id,先创建家庭
       if (!familyId) {
-        let { id } = await transMgr.save(
+        const { id } = await transMgr.save(
           BabyFamily,
           Object.assign(new BabyFamily(), { name: baby.nickname })
         );
@@ -130,11 +131,11 @@ export class BabyService extends BaseService {
   }
 
   async update(upDto: BabyUpdateDTO) {
-    let userId = this.ctx.uid;
-    let { relation, ...babyDto } = upDto;
+    const userId = this.ctx.uid;
+    const { relation, ...babyDto } = upDto;
 
     //根据userId我当前的关系
-    let selfInfo = await this.accountBabyFamilyModel.findOne({
+    const selfInfo = await this.accountBabyFamilyModel.findOne({
       select: ['id', 'relation', 'userId', 'role', 'familyId'],
       where: {
         userId,
@@ -147,7 +148,7 @@ export class BabyService extends BaseService {
     }
 
     // 查询目标关系对应的信息
-    let otherInfo = await this.accountBabyFamilyModel.findOne({
+    const otherInfo = await this.accountBabyFamilyModel.findOne({
       select: ['id', 'relation', 'userId', 'role'],
       where: {
         familyId: babyDto.familyId,

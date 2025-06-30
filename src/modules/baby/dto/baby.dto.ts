@@ -16,7 +16,7 @@ export class BabyDTO {
   })
   nickname: string;
 
-  @Rule(RuleType.number().allow(''))
+  @Rule(RuleType.string().allow(''))
   @ApiProperty({
     example: 1,
     description: '家庭id',
