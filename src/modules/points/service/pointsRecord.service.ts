@@ -7,7 +7,6 @@ import { PointsRecordDTO, PointsRecordPageDTO } from '../dto/pointsRecord.dto';
 import { EnumYesNoPlus, useDate } from '@mid-vue/shared';
 import { PointsRule } from '../entity/pointsRule';
 import { PointsSummaryService } from './pointsSummary.service';
-import { Snowflake } from 'nodejs-snowflake';
 
 @Provide()
 export class PointsRecordService extends BaseService {
@@ -56,11 +55,7 @@ export class PointsRecordService extends BaseService {
       where: { code: ruleCode },
     });
     if (!rule) throw new Error('未找到积分规则');
-    // /** 雪花ID */
-    // const uid = new Snowflake({
-    //   instance_id: 1,
-    //   custom_epoch: 1734472500000,
-    // });
+
     return await this.pointsRecordModel.insert({
       userId,
       changeType,

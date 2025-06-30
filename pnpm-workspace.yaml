@@ -1,2 +1,4 @@
-ignoredBuiltDependencies:
-  - '@scarf/scarf'
+publicHoistPattern:
+  - '*eslint*'
+  - '*prettier*'
+  - '*typescript*'
