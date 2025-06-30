@@ -1,2 +1,3 @@
-ignoredBuiltDependencies:
-  - '@scarf/scarf'
+hoistPattern:
+  - '*eslint*'
+  - '*babel*'
