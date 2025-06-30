@@ -1,3 +1,4 @@
-hoistPattern:
+publicHoistPattern:
   - '*eslint*'
-  - '*babel*'
+  - '*prettier*'
+  - '*typescript*'

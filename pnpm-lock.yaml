@@ -81,6 +81,9 @@ importers:
       cross-env:
         specifier: ^6.0.0
         version: 6.0.3
+      eslint:
+        specifier: ^7.10.0
+        version: 7.32.0
       jest:
         specifier: ^29.2.2
         version: 29.7.0(@types/node@22.15.32)
