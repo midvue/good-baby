@@ -163,7 +163,7 @@ export class BabyService extends BaseService {
       // 如果修改关系,则互换爸妈的角色
       if (selfInfo.relation !== relation) {
         // 如果目标关系有用户,则互换角色
-        if (otherInfo.id) {
+        if (otherInfo?.id) {
           transMgr.update(AccountBabyFamily, otherInfo.id, {
             ...otherInfo,
             relation: selfInfo.relation,
