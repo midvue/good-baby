@@ -77,13 +77,13 @@ export class BabyService extends BaseService {
 
   /** 添加协助喂养人 */
   async addFoster(dto: BabyCreateDTO) {
-    const { familyId } = await this.accountBabyFamilyModel.findOne({
+    const res = await this.accountBabyFamilyModel.findOne({
       select: ['familyId'],
       where: {
         userId: dto.userId,
       },
     });
-    if (familyId === dto.familyId) {
+    if (res && res?.familyId === dto.familyId) {
       return this.commError('您已经加入该家庭');
     }
     const { id } = await this.accountBabyFamilyModel.save({
