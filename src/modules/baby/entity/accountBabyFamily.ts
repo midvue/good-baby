@@ -1,4 +1,5 @@
 import { Column, Index, PrimaryGeneratedColumn, Entity } from 'typeorm';
+import { EnumRelation } from '../constans';
 
 /**
  * 用户-家庭-关系表
@@ -29,7 +30,7 @@ export class AccountBabyFamily {
     length: 8,
     name: 'relation',
     comment: '关系身份(200:爸爸,100:妈妈) 字典:FAMILY_RELATION',
-    default: '100',
+    default: EnumRelation.MOTHER,
   })
   relation: string;
 }

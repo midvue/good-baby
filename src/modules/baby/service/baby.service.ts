@@ -12,6 +12,7 @@ import {
 import { AccountBabyFamily } from '../entity/accountBabyFamily';
 import { Baby } from '../entity/baby';
 import { BabyFamily } from '../entity/babyFamily';
+import { EnumRelation } from '../constans';
 
 @Provide()
 export class BabyService extends BaseService {
@@ -139,12 +140,18 @@ export class BabyService extends BaseService {
       select: ['id', 'relation', 'userId', 'role', 'familyId'],
       where: {
         userId,
-        role: EnumYesNoPlus.YES,
+        familyId: babyDto.familyId,
       },
     });
-    // 校验是否是创建人
-    if (selfInfo.familyId !== babyDto.familyId) {
-      return this.commError('您不是创建人 ,无法更新宝宝信息');
+
+    // 校验是否是爸爸,妈妈
+    if (
+      ![EnumRelation.FATHER, EnumRelation.MOTHER as string].includes(
+        selfInfo.relation
+      ) ||
+      !selfInfo
+    ) {
+      return this.commError('只有爸爸妈妈,可更新宝宝信息');
     }
 
     // 查询目标关系对应的信息
