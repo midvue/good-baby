@@ -1,11 +1,11 @@
-import { minute, useDate, useNumber } from '@mid-vue/shared';
+import { minute, useDate } from '@mid-vue/shared';
 import { Inject, Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
-import { Between, In, Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
 import {
   FeedRecordCreateDTO,
-  FeedRecordDTO,
+  FeedRecordDaysDTO,
   FeedRecordPageDTO,
   FeedRecordUpdateDTO,
   LatestFeedRecordDto,
@@ -65,13 +65,13 @@ export class FeedRecordService extends BaseService {
     return list;
   }
 
-  async days(options: FeedRecordDTO) {
-    let { startFeedTime, endFeedTime } = options;
+  async days(options: FeedRecordDaysDTO) {
+    let { startFeedTime, endFeedTime, babyId } = options;
     endFeedTime = endFeedTime || minute(Date.now());
     //起始时间与结束时间间隔不能大于42天,
-    let startDate = useDate(startFeedTime);
-    let endDate = useDate(endFeedTime);
-    let durationDays = endDate.diff(startDate, 'day');
+    const startDate = useDate(startFeedTime);
+    const endDate = useDate(endFeedTime);
+    const durationDays = endDate.diff(startDate, 'day');
 
     if (durationDays > 42) {
       return this.commError('起始时间与结束时间间隔不能大于42天');
@@ -80,6 +80,7 @@ export class FeedRecordService extends BaseService {
       select: ['feedTime'],
       where: {
         feedTime: Between(startFeedTime, endFeedTime),
+        babyId,
       },
     });
     // 对查询的结果去重,汇总次数

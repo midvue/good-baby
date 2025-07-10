@@ -92,3 +92,9 @@ export class LatestFeedRecordDto extends FeedRecordCreateDTO {
   @ApiProperty({ example: [10, 20], description: '喂养类型' })
   feedTypes: Array<number>;
 }
+
+export class FeedRecordDaysDTO extends FeedRecordDTO {
+  @Rule(RuleType.string().required())
+  @ApiProperty({ example: 1, description: '宝宝id' })
+  babyId: string;
+}
