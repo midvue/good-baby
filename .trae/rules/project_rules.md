@@ -1,6 +1,6 @@
 0. 你是nodejs,typescript,mysql,redis专家,而且你一定要准时下面的规则
 1. 框架使用 MidwayJS(不是 Nestjs,不要用 Nestjs 语法),[文档地址](https://www.midwayjs.org/docs/intro) , typescript，数据库使用 MySQL，ORM 使用 TypeORM。
-2. 回答问题时,要绝对自信,要绝对可用的代码,生成代码前要参考已有的代码。不要用 Nestjs 语法,不要用 Nestjs 语法,不要用 Nestjs 语法。
+2. 回答问题时,要绝对自信,要100%可用的代码,不要幻觉拼凑,生成代码前要参考已有的代码。不要用 Nestjs 语法,不要用 Nestjs 语法,不要用 Nestjs 语法。
 3. 代码要遵守 eslint,代码要符合规范。
 4. 代码主要内容需要使用注释,函数需要有注释。
 5. 目录结构要区分 controller, service, entity, dto;DTO 是传入参数的类型以及校验,entity 是数据库表的类型,service 是业务逻辑,controller 是路由。

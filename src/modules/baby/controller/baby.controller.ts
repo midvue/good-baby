@@ -13,7 +13,6 @@ import { Validate } from '@midwayjs/validate';
 import { BaseController } from '../../base/base.controller';
 import {
   BabyCreateDTO,
-  BabyDTO,
   BabyListDTO,
   BabyPageDTO,
   BabyUpdateDTO,

@@ -62,6 +62,9 @@ importers:
       nodejs-snowflake:
         specifier: ^2.0.1
         version: 2.0.1
+      openai:
+        specifier: ^5.10.1
+        version: 5.10.1
       typeorm:
         specifier: ^0.3.20
         version: 0.3.25(ioredis@5.4.2)(mysql2@3.14.1)(reflect-metadata@0.2.2)
@@ -2356,6 +2359,18 @@ packages:
 
   only@0.0.2:
     resolution: {integrity: sha512-Fvw+Jemq5fjjyWz6CpKx6w9s7xxqo3+JCyM0WXWeCSOboZ8ABkyvP8ID4CZuChA/wxSx+XSJmdOm8rGVyJ1hdQ==}
+
+  openai@5.10.1:
+    resolution: {integrity: sha512-fq6xVfv1/gpLbsj8fArEt3b6B9jBxdhAK+VJ+bDvbUvNd+KTLlA3bnDeYZaBsGH9LUhJ1M1yXfp9sEyBLMx6eA==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.23.8
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -5897,6 +5912,8 @@ snapshots:
       mimic-fn: 2.1.0
 
   only@0.0.2: {}
+
+  openai@5.10.1: {}
 
   optionator@0.9.4:
     dependencies:

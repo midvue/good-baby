@@ -44,7 +44,7 @@ export class BabyFamilyService extends BaseService {
 
   async list(options: BabyFamilyListDTO) {
     const { name } = options || {};
-    let familyIds = await this.accountBabyFamilyModel.find({
+    const familyIds = await this.accountBabyFamilyModel.find({
       select: ['familyId'],
       where: { userId: options.userId },
     });

@@ -52,5 +52,11 @@ export default (appInfo: MidwayAppInfo) => {
       instance_id: 1, // 实例ID，取值范围 0-31，默认为 0
       custom_epoch: 1734472500000, // 其实时间戳，默认为 （2024-12-18 05:55:00）
     },
+    ai: {
+      volcengine: {
+        apiKey: process.env['VOLCENGINE_API_KEY'],
+        baseURL: process.env['VOLCENGINE_API_BASE_URL'],
+      },
+    },
   };
 };
