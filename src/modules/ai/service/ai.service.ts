@@ -1,7 +1,8 @@
-import { Config, Provide, Init } from '@midwayjs/core';
+import { Config, Provide } from '@midwayjs/core';
 import OpenAI from 'openai';
-import { AIRequestDTO } from '../dto/ai.dto';
 import { BaseService } from '../../base/base.service';
+import { AINameDTO } from '../dto/ai.dto';
+import { EnumYesNoPlus } from '@mid-vue/shared';
 
 /**
  * AI 模块服务
@@ -12,10 +13,9 @@ export class AIService extends BaseService {
   ai: { volcengine: { apiKey: string; baseURL: string } };
 
   /**
-   * 调用火山引擎 AIP 接口
-   * @param params 请求参数
+   * 调用ai模型取名
    */
-  async callAIP(params: AIRequestDTO) {
+  async names(dto: AINameDTO) {
     const openai = new OpenAI({
       apiKey: this.ai.volcengine.apiKey,
       baseURL: this.ai.volcengine.baseURL,
@@ -30,18 +30,34 @@ export class AIService extends BaseService {
         {
           role: 'user',
           content: `
-          我姓朱,给我的男宝宝取一个名字
+          我需要给宝宝取一个名字
+          姓氏:${dto.surname},
+          性别:${dto.gender === EnumYesNoPlus.NO ? '男' : '女'},
+          ${
+            dto.birthDate
+              ? '出生日期:' + dto.birthDate + ' ' + dto.birthTime
+              : ''
+          },
+          ${dto.remark ? '备注:' + dto.remark : ''}
           1. 从清新婉约,英武阳刚,励志成才,平安健康,节气四季,蔬果绿植,现代流行等7个角度,每个角度取2个2字名字,3个3个字名字,一共7*5=35个名字
           2. 书写简单,重复少,寓意深刻,有典故,有出处的名字算好的名字
           3. 返回的名字(name),同时还返回对应的寓意典故(desc)长度在30个汉字以内
-          4. 6个角度分别返回一个对象数组,每个数组中对象为{name:'',desc:''},最后组合一个二维数组JSON代码(如:[[{name:'',desc:''}]])
-          5. 结果直接返回[开头,结尾]的JSON代码,不要有任何其他内容和多余的符号
+          4. 返回的结果结构为:
+          [
+            [{name:'',desc:''}],
+            [{name:'',desc:''}],
+            [{name:'',desc:''}],
+            [{name:'',desc:''}],
+            [{name:'',desc:''}],
+            [{name:'',desc:''}],
+            [{name:'',desc:''}]
+          ] 
+          5. 结果直接返回[开头,结尾]的JSON代码,不要有任何其他无关的内容,也不要有任何其他的注释,说明
         `,
         },
       ],
       model: 'deepseek-v3-250324',
     });
-    console.log(completion.choices[0].message.content);
-    return completion.choices[0].message.content;
+    return JSON.parse(completion.choices[0].message.content);
   }
 }

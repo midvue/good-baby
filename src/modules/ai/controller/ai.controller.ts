@@ -1,7 +1,7 @@
 import { Body, Controller, Inject, Post } from '@midwayjs/core';
 import { ApiOperation } from '@midwayjs/swagger';
 import { BaseController } from '../../base/base.controller';
-import { AIRequestDTO } from '../dto/ai.dto';
+import { AINameDTO } from '../dto/ai.dto';
 import { AIService } from '../service/ai.service';
 
 /**
@@ -15,9 +15,10 @@ export class AIController extends BaseController {
   @Inject()
   aiService: AIService;
 
-  @Post('/call')
+  @Post('/names')
   @ApiOperation({ summary: '调用火山引擎 AIP 接口' })
-  async callAIP(@Body() params: AIRequestDTO) {
-    return this.aiService.callAIP(params);
+  async names(@Body() nameDto: AINameDTO) {
+    const res = await this.aiService.names(nameDto);
+    return this.success(res);
   }
 }
