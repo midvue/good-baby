@@ -1,0 +1,42 @@
+{
+  "editor.fontSize": 17,
+  "editor.formatOnSave": true,
+  "debug.console.fontSize": 16,
+  "markdown.preview.fontSize": 16,
+  "editor.codeLensFontSize": 16,
+  "terminal.integrated.fontSize": 16,
+  "emmet.triggerExpansionOnTab": true,
+  // 添加 vue 支持
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "vue",
+    "typescript",
+    "typescriptreact"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "emmet.includeLanguages": {
+    "javascript": "html",
+    "vue-html": "html",
+    "plaintext": "jade",
+    "ejs": "html",
+    "typescriptreact": "html",
+    "javascriptreact": "html"
+  },
+  "files.exclude": {
+    //"**/node_modules": true
+  },
+  "javascript.inlayHints.parameterNames.enabled": "all"
+  
+}
