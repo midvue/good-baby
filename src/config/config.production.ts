@@ -1,6 +1,6 @@
-import { MidwayAppInfo, MidwayConfig } from '@midwayjs/core';
+import { MidwayConfig } from '@midwayjs/core';
 
-export default (_: MidwayAppInfo): MidwayConfig => {
+export default (): MidwayConfig => {
   return {
     keys: process.env.MIDWAY_KEYS,
     jwt: {
@@ -24,13 +24,6 @@ export default (_: MidwayAppInfo): MidwayConfig => {
           timezone: '+08:00',
           entities: ['**/entity/*'],
         },
-      },
-    },
-    wx: {
-      // 微信小程序配置 appid  secret  小程序id  小程序密钥
-      miniapp: {
-        appid: process.env.WX_MINIAPP_APPID,
-        secret: process.env.WX_MINIAPP_SECRET,
       },
     },
   };

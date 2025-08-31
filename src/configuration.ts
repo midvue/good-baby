@@ -1,18 +1,21 @@
-import { Configuration, App } from '@midwayjs/core';
+import { App, Configuration } from '@midwayjs/core';
+import * as info from '@midwayjs/info';
 import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
-import * as info from '@midwayjs/info';
 import * as dotenv from 'dotenv';
 
-import * as orm from '@midwayjs/typeorm';
-import * as swagger from '@midwayjs/swagger';
 import * as jwt from '@midwayjs/jwt';
+import * as redis from '@midwayjs/redis';
+import * as swagger from '@midwayjs/swagger';
+import * as orm from '@midwayjs/typeorm';
 import { join, resolve } from 'path';
+
 import { DefaultErrorFilter } from './filter/default.filter';
 //import { ReportMiddleware } from './middleware/report.middleware';
-import { JwtMiddleware } from './middleware/jwt';
-import * as cron from '@midwayjs/cron';
+import * as bullmq from '@midwayjs/bullmq';
 import * as busboy from '@midwayjs/busboy';
+import * as cron from '@midwayjs/cron';
+import { JwtMiddleware } from './middleware/jwt';
 dotenv.config({
   path: [
     resolve(process.cwd(), '.env.local'),
@@ -26,8 +29,10 @@ dotenv.config({
     validate,
     orm,
     jwt,
+    redis,
     cron,
     busboy,
+    bullmq,
     {
       component: swagger,
       enabledEnvironment: ['local'],

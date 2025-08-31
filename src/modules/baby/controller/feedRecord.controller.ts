@@ -14,7 +14,6 @@ import { BaseController } from '../../base/base.controller';
 import {
   FeedRecordCreateDTO,
   FeedRecordDaysDTO,
-  FeedRecordDTO,
   FeedRecordPageDTO,
   FeedRecordUpdateDTO,
   LatestFeedRecordDto,

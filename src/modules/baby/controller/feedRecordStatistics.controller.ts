@@ -1,0 +1,36 @@
+import { Body, Controller, Get, Inject, Post, Query } from '@midwayjs/core';
+import { ApiOperation } from '@midwayjs/swagger';
+import { BaseController } from '../../base/base.controller';
+import { FeedRecordPageDTO, FeedRecordUpdateDTO } from '../dto/feedRecord.dto';
+import { FeedRecordStatisticsService } from '../service/feedRecordStatistics.service';
+
+@Controller('/baby/feedRecordStatistics', {
+  description: '喂养记录统计',
+  tagName: 'feedRecordStatistics',
+})
+export class FeedRecordStatisticsController extends BaseController {
+  @Inject()
+  feedRecordStatisticsService: FeedRecordStatisticsService;
+
+  @Post('/page')
+  @ApiOperation({ summary: '分页获取列表' })
+  async page(@Body() feedDto: FeedRecordPageDTO) {
+    const res = await this.feedRecordStatisticsService.page(feedDto);
+    return this.success(res);
+  }
+
+  @Post('/list')
+  @ApiOperation({ summary: '获取列表' })
+  async list(@Body() feedDto: FeedRecordUpdateDTO) {
+    const res = await this.feedRecordStatisticsService.list(feedDto);
+    return this.success(res);
+  }
+
+  @Get('/info')
+  @ApiOperation({ summary: '查询详情' })
+  async info(@Query('id') id: number) {
+    const uid = id || this.ctx.uid;
+    const res = await this.feedRecordStatisticsService.info(uid);
+    return this.success(res);
+  }
+}

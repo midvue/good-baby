@@ -40,6 +40,24 @@ export default (appInfo: MidwayAppInfo) => {
       tmpdir: join(appInfo.appDir, 'midway-busboy-files'),
     },
 
+    redis: {
+      client: {
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT, 10),
+        password: process.env.REDIS_PASSWORD,
+        db: parseInt(process.env.REDIS_DB, 10),
+      },
+    },
+
+    bullmq: {
+      defaultConnection: {
+        port: parseInt(process.env.REDIS_PORT, 10),
+        host: process.env.REDIS_HOST,
+        password: process.env.REDIS_PASSWORD,
+        db: 1,
+      },
+    },
+
     swagger: {
       title: 'good baby',
       description: 'good baby 宝宝成长系统',
@@ -51,6 +69,13 @@ export default (appInfo: MidwayAppInfo) => {
     snowflake: {
       instance_id: 1, // 实例ID，取值范围 0-31，默认为 0
       custom_epoch: 1734472500000, // 其实时间戳，默认为 （2024-12-18 05:55:00）
+    },
+    wx: {
+      // 微信小程序配置 appid  secret  小程序id  小程序密钥
+      miniapp: {
+        appid: process.env.WX_MINIAPP_APPID,
+        secret: process.env.WX_MINIAPP_SECRET,
+      },
     },
     ai: {
       volcengine: {
