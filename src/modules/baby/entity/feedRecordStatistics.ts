@@ -16,7 +16,7 @@ export class FeedRecordStatistics extends SnowIdBaseEntity {
   count: number;
 
   @Column({ name: 'details', comment: '喂养详情', type: 'json' })
-  details: JSON;
+  details: any[];
 
   @Column({ name: 'feed_date', comment: '喂养日期', type: 'timestamp' })
   feedDate: string;

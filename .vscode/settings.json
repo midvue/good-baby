@@ -40,7 +40,9 @@
   "javascript.inlayHints.parameterNames.enabled": "all",
   "cSpell.words": [
     "bullmq",
-    "midwayjs"
+    "midwayjs",
+    "miniapp",
+    "volcengine"
   ]
   
 }

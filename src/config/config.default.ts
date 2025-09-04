@@ -54,7 +54,7 @@ export default (appInfo: MidwayAppInfo) => {
         port: parseInt(process.env.REDIS_PORT, 10),
         host: process.env.REDIS_HOST,
         password: process.env.REDIS_PASSWORD,
-        db: 1,
+        db: parseInt(process.env.REDIS_BULLMQ_DB, 10),
       },
     },
 

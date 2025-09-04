@@ -26,11 +26,10 @@ export class FeedRecordStatisticsController extends BaseController {
     return this.success(res);
   }
 
-  @Get('/info')
-  @ApiOperation({ summary: '查询详情' })
-  async info(@Query('id') id: number) {
-    const uid = id || this.ctx.uid;
-    const res = await this.feedRecordStatisticsService.info(uid);
+  @Post('/week')
+  @ApiOperation({ summary: '获取周统计' })
+  async week(@Body() feedDto: FeedRecordUpdateDTO) {
+    const res = await this.feedRecordStatisticsService.week(feedDto);
     return this.success(res);
   }
 }
