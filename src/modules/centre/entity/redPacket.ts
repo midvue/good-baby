@@ -5,8 +5,12 @@ import { SnowIdBaseEntity } from '../../base/base.entity';
 export class RedPacket extends SnowIdBaseEntity {
   @Column({ comment: '用户ID' })
   userId: string;
-  @Column({ comment: '宝宝ID' })
-  babyId: string;
+
+  @Column({ comment: '宝宝ID', nullable: true })
+  babyId?: string;
+
+  @Column({ comment: '家族ID', nullable: true })
+  familyId?: string;
 
   @Column({ comment: '记录时间', type: 'timestamp' })
   recordTime: string;

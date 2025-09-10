@@ -8,8 +8,12 @@ export class RedPacketDTO {
   userId?: string;
 
   @ApiProperty({ description: '宝宝ID', example: 1 })
-  @Rule(RuleType.string().allow('').empty(''))
+  @Rule(RuleType.string().optional().allow('').empty(''))
   babyId?: string;
+
+  @ApiProperty({ description: '家族ID', example: 1 })
+  @Rule(RuleType.string().optional().allow('').empty(''))
+  familyId?: string;
 
   @ApiProperty({
     description: '记录时间（YYYY-MM-DD HH:mm:ss）',
@@ -45,6 +49,15 @@ export class RedPacketDTO {
   })
   @Rule(RuleType.number().optional())
   amount?: number;
+
+  // 在 RedPacketDTO 中添加
+  @ApiProperty({ description: '最小金额', example: 10 })
+  @Rule(RuleType.number().optional())
+  minAmount?: number;
+
+  @ApiProperty({ description: '最大金额', example: 100 })
+  @Rule(RuleType.number().optional())
+  maxAmount?: number;
 }
 
 /** 红包记录分页查询DTO */

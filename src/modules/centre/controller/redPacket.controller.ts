@@ -44,7 +44,6 @@ export class RedPacketController extends BaseController {
   @ApiOperation({ summary: '红包记录添加' })
   async add(@Body() dto: RedPacketDTO) {
     dto.userId = dto.userId || this.ctx.uid;
-    console.log('dto', dto);
     const res = await this.redPacketService.add(dto);
     return this.success(res);
   }
