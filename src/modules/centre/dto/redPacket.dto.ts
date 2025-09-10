@@ -26,8 +26,8 @@ export class RedPacketDTO {
     description: '红包类型',
     example: 1,
   })
-  @Rule(RuleType.number().allow(''))
-  type?: number;
+  @Rule(RuleType.string().allow(''))
+  type?: string;
 
   @ApiProperty({
     description: '姓名',

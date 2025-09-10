@@ -25,5 +25,5 @@ export class RedPacket extends SnowIdBaseEntity {
   callName: string;
 
   @Column({ comment: '红包类型' })
-  type: number;
+  type: string;
 }
