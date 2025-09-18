@@ -6,10 +6,10 @@ export class UterineRecord extends SnowIdBaseEntity {
   @Column({ comment: '用户ID' })
   userId: string;
 
-  @Column({ comment: '开始时间', type: 'timestamp' })
+  @Column({ comment: '开始时间', type: 'timestamp', name: 'start_time' })
   startTime: string;
 
-  @Column({ comment: '结束时间', type: 'timestamp' })
+  @Column({ comment: '结束时间', type: 'timestamp', name: 'end_time' })
   endTime: string;
 
   @Column({ comment: '持续时间（秒）' })
