@@ -24,4 +24,7 @@ export class FeedRecord extends SnowIdBaseEntity {
 
   @Column({ name: 'remark', comment: '备注', length: 128, default: null })
   remark: string;
+
+  // 非数据库字段，创建人昵称
+  nickname?: string;
 }

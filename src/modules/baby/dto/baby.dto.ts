@@ -92,14 +92,14 @@ export class BabyListDTO extends BabyDTO {
 }
 
 export class BabyUpdateDTO extends BabyDTO {
-  @Rule(RuleType.string().required())
+  @Rule(RuleType.string().allow(''))
   @ApiProperty({
     example: 1,
     description: 'id',
   })
   id: string;
 
-  @Rule(RuleType.string().required())
+  @Rule(RuleType.string().allow())
   @ApiProperty({
     example: 1,
     description: '宝宝家庭id',

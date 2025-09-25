@@ -3,6 +3,7 @@ import { Inject, Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
+import { BabyService } from './baby.service';
 import {
   FeedRecordCreateDTO,
   FeedRecordDaysDTO,
@@ -12,11 +13,15 @@ import {
 } from '../dto/feedRecord.dto';
 import { FeedRecord } from '../entity/feedRecord';
 import { PointsRecordService } from '../../points/service/pointsRecord.service';
+import { log } from 'console';
 
 @Provide()
 export class FeedRecordService extends BaseService {
   @InjectEntityModel(FeedRecord)
   feedRecordModel: Repository<FeedRecord>;
+
+  @Inject()
+  babyService: BabyService;
 
   @Inject()
   pointsRecordService: PointsRecordService;
@@ -41,7 +46,19 @@ export class FeedRecordService extends BaseService {
       skip: (options.current - 1) * options.size,
       take: options.size,
     });
+    // 提取所有 babyIds（去重，避免重复查询）
+    const babyIds = [...new Set(list.map(item => item.babyId).filter(Boolean))];
+    log('babyIds', babyIds);
+    if (babyIds.length > 0) {
+      // 批量查询用户昵称（假设用户服务有此方法，返回 { userId: nickname } 映射）
+      const userNicknames = await this.babyService.getNicknamesByIds(babyIds);
 
+      // 为每条记录添加 nickname 字段
+      list.forEach(item => {
+        item.nickname = userNicknames[item.babyId] || ''; // 无昵称时显示空字符串
+      });
+    }
+    console.log('list', list);
     return { list, count };
   }
 

@@ -76,6 +76,19 @@ export class BabyService extends BaseService {
     return info;
   }
 
+  /** 批量获取baby昵称 */
+  async getNicknamesByIds(babyIds: string[]): Promise<Record<string, string>> {
+    const babies = await this.babyModel.find({
+      where: { id: In(babyIds) },
+      select: ['id', 'nickname'], // 只查询需要的字段
+    });
+    // 转换为 { babyId: nickname } 映射
+    return babies.reduce((map, baby) => {
+      map[baby.id] = baby.nickname;
+      return map;
+    }, {} as Record<string, string>);
+  }
+
   /** 添加协助喂养人 */
   async addFoster(dto: BabyCreateDTO) {
     const res = await this.accountBabyFamilyModel.findOne({
