@@ -19,6 +19,21 @@ export class FeedRecordStatisticsService extends BaseService {
   @InjectEntityModel(FeedRecordStatistics)
   feedRecordStatisticsModel: Repository<FeedRecordStatistics>;
 
+  /**
+   * 判断是否为有效的最新喂养时间（只计算凌晨6点前的最晚时间）
+   * @param newTime 新的时间
+   * @param currentTime 当前记录的时间
+   * @returns 是否为更晚的有效时间
+   */
+  private isLatestFeedTime(newTime: string, currentTime: string) {
+    const newFeedTime = useDate(newTime);
+    const sixAm = newFeedTime.startOf('day').add(6, 'hour');
+    if (newFeedTime.isAfter(sixAm)) return false;
+    if (!currentTime) return true;
+    // 只有当新时间在凌晨6点之前，并且比当前记录的时间更晚时才更新
+    return newFeedTime.isAfter(useDate(currentTime));
+  }
+
   async page(options: Partial<FeedRecordPageDTO>) {
     const { id, feedType, startFeedTime, endFeedTime, babyId } = options;
 
@@ -64,13 +79,40 @@ export class FeedRecordStatisticsService extends BaseService {
     return list;
   }
 
+  /**
+   * 更新全局最新的喂养时间
+   * @param acc 累加器
+   * @param options 包含时间、类型和用户ID的对象
+   */
+  private updateGlobalLastFeedTime(
+    acc: Record<string, any>,
+    options: {
+      lastFeedTime?: string;
+      feedType?: EnumFeedType;
+      lastFeedUid?: string;
+    }
+  ) {
+    const { lastFeedTime: time, feedType: type, lastFeedUid: uid } = options;
+    // 如果没有时间，则直接返回
+    if (!time) return;
+
+    const newFeedTime = useDate(time);
+    const sixAm = newFeedTime.startOf('day').add(6, 'hour');
+    if (newFeedTime.isAfter(sixAm)) return;
+    if (!acc.lastFeedTime || newFeedTime.isAfter(useDate(acc.lastFeedTime))) {
+      acc.lastFeedTime = time;
+      acc.lastFeedUid = uid || '';
+      acc.lastFeedType = type || EnumFeedType.MILK_BOTTLE;
+    }
+  }
+
   /** 获取周统计
    * @param option 查询参数
    */
   async week(option: Partial<FeedRecordUpdateDTO>) {
     const { babyId, startFeedTime, endFeedTime } = option;
 
-    // 使用mysql week函数
+    // 获取指定时间范围内的每日统计数据
     const list = await this.feedRecordStatisticsModel.find({
       order: {
         feedDate: 'DESC',
@@ -80,36 +122,181 @@ export class FeedRecordStatisticsService extends BaseService {
         feedDate: Between(startFeedTime, endFeedTime),
       },
     });
-    //把每日的数据合并成周数据
-    const week = list.reduce(
+
+    // 按周汇总数据
+    const weeklyData = list.reduce(
       (acc, cur) => {
+        // 累加总次数
         acc.count += cur.count;
-        Object.values(cur).forEach(item => {
-          const { feedType, count, total } = item;
+
+        // 处理奶瓶喂养数据
+        if (cur.milkBottle) {
+          const {
+            feedType = EnumFeedType.MILK_BOTTLE,
+            count = 0,
+            total = 0,
+            lastFeedTime,
+            lastFeedUid,
+          } = cur.milkBottle;
           if (!acc.detailMap[feedType]) {
             acc.detailMap[feedType] = {
               feedType,
-              count: count,
-              total: total,
+              count,
+              total,
+              maxTotal: total,
             };
           } else {
             acc.detailMap[feedType].count += count;
             acc.detailMap[feedType].total += total;
+            acc.detailMap[feedType].maxTotal = Math.max(
+              acc.detailMap[feedType].maxTotal,
+              total
+            );
           }
-        });
+
+          // 更新全局最新的喂养时间
+          this.updateGlobalLastFeedTime(acc, {
+            lastFeedTime,
+            feedType,
+            lastFeedUid,
+          });
+        }
+
+        // 处理母乳亲喂数据
+        if (cur.breastFeedDirect) {
+          const {
+            feedType = EnumFeedType.BREAST_FEED_DIRECT,
+            count = 0,
+            total = 0,
+            duration = 0,
+            lastFeedTime,
+            lastFeedUid,
+          } = cur.breastFeedDirect;
+          if (!acc.detailMap[feedType]) {
+            acc.detailMap[feedType] = {
+              feedType,
+              count,
+              total,
+              duration,
+              maxDuration: duration,
+            };
+          } else {
+            acc.detailMap[feedType].count += count;
+            acc.detailMap[feedType].total += total;
+            acc.detailMap[feedType].duration += duration;
+            acc.detailMap[feedType].maxDuration = Math.max(
+              acc.detailMap[feedType].maxDuration,
+              duration
+            );
+          }
+
+          // 更新全局最新的喂养时间
+          this.updateGlobalLastFeedTime(acc, {
+            lastFeedTime,
+            feedType,
+            lastFeedUid,
+          });
+        }
+
+        // 处理尿布数据
+        if (cur.diaper) {
+          const {
+            feedType = EnumFeedType.DIAPER,
+            count = 0,
+            lastFeedTime,
+            lastFeedUid,
+          } = cur.diaper;
+          if (!acc.detailMap[feedType]) {
+            acc.detailMap[feedType] = {
+              feedType,
+              count,
+            };
+          } else {
+            acc.detailMap[feedType].count += count;
+          }
+
+          // 更新全局最新的喂养时间
+          this.updateGlobalLastFeedTime(acc, {
+            lastFeedTime,
+            feedType,
+            lastFeedUid,
+          });
+        }
+
+        // 处理身高体重数据
+        if (cur.heightWeight) {
+          const {
+            feedType = EnumFeedType.HEIGHT_WEIGHT,
+            count = 0,
+            lastFeedTime,
+            lastFeedUid,
+          } = cur.heightWeight;
+          if (!acc.detailMap[feedType]) {
+            acc.detailMap[feedType] = {
+              feedType,
+              count,
+            };
+          } else {
+            acc.detailMap[feedType].count += count;
+          }
+
+          // 更新全局最新的喂养时间
+          this.updateGlobalLastFeedTime(acc, {
+            lastFeedTime,
+            feedType,
+            lastFeedUid,
+          });
+        }
+
+        // 处理其他喂养类型数据
+        if (cur.otherFeedList && Array.isArray(cur.otherFeedList)) {
+          cur.otherFeedList.forEach(item => {
+            const { feedType, count = 0, lastFeedTime, lastFeedUid } = item;
+            if (feedType) {
+              if (!acc.detailMap[feedType]) {
+                acc.detailMap[feedType] = {
+                  feedType,
+                  count,
+                };
+              } else {
+                acc.detailMap[feedType].count += count;
+              }
+
+              // 更新全局最新的喂养时间
+              this.updateGlobalLastFeedTime(acc, {
+                lastFeedTime,
+                feedType,
+                lastFeedUid,
+              });
+            }
+          });
+        }
+
         return acc;
       },
       {
         detailMap: {} as Record<
           string,
-          { feedType: string; count: number; total?: number }
+          {
+            feedType: EnumFeedType;
+            count: number;
+            total?: number;
+            /** 最大总喂养量 */
+            maxTotal?: number;
+            duration?: number;
+            /** 最大母乳喂养时间 */
+            maxDuration?: number;
+          }
         >,
         count: 0,
+        lastFeedTime: '',
+        lastFeedUid: '',
+        lastFeedType: EnumFeedType.MILK_BOTTLE, // 默认值
         babyId,
       }
     );
 
-    return week;
+    return weeklyData;
   }
 
   /** 获取指定时间范围
