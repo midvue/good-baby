@@ -20,7 +20,7 @@ export class FeedRecord extends SnowIdBaseEntity {
   feedTime: string;
 
   @Column({ comment: '喂养内容', type: 'json' })
-  content: JSON;
+  content: Record<string, any>;
 
   @Column({ name: 'remark', comment: '备注', length: 128, default: null })
   remark: string;

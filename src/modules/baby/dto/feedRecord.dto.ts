@@ -46,10 +46,10 @@ export class FeedRecordDTO {
 
   @Rule(RuleType.object<Record<string, any>>().allow(null).default({}))
   @ApiProperty({
-    example: '奶粉150ml',
+    example: '{}',
     description: '字典内容',
   })
-  content: JSON;
+  content: Record<string, any>;
 }
 
 export class FeedRecordCreateDTO extends FeedRecordDTO {

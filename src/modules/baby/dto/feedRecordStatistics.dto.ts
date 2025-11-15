@@ -13,7 +13,7 @@ export class FeedRecordStatisticsDTO {
     ],
     description: '创建用户',
   })
-  createUsers: JSON;
+  createUsers: Record<string, any>;
 
   @Rule(RuleType.string().allow('').empty(''))
   @ApiProperty({
@@ -26,7 +26,7 @@ export class FeedRecordStatisticsDTO {
     ],
     description: '喂养类型的统计数据',
   })
-  feedTypeInfo: JSON;
+  feedTypeInfo: Record<string, any>;
 
   @Rule(RuleType.string().allow(''))
   @ApiProperty({

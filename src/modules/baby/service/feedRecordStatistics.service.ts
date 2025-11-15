@@ -1,11 +1,15 @@
-import { dateFormat, minute } from '@mid-vue/shared';
+import { dateFormat, minute, useDate } from '@mid-vue/shared';
 import { Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { BaseService } from '../../base/base.service';
 import { FeedRecordPageDTO, FeedRecordUpdateDTO } from '../dto/feedRecord.dto';
 import { FeedRecord } from '../entity/feedRecord';
-import { FeedRecordStatistics } from '../entity/feedRecordStatistics';
+import {
+  FeedRecordStatistics,
+  FeedStatBase,
+} from '../entity/feedRecordStatistics';
+import { EnumFeedType } from '../../../constants/dict';
 
 @Provide()
 export class FeedRecordStatisticsService extends BaseService {
@@ -80,7 +84,7 @@ export class FeedRecordStatisticsService extends BaseService {
     const week = list.reduce(
       (acc, cur) => {
         acc.count += cur.count;
-        cur.details.forEach(item => {
+        Object.values(cur).forEach(item => {
           const { feedType, count, total } = item;
           if (!acc.detailMap[feedType]) {
             acc.detailMap[feedType] = {
@@ -96,7 +100,10 @@ export class FeedRecordStatisticsService extends BaseService {
         return acc;
       },
       {
-        detailMap: {},
+        detailMap: {} as Record<
+          string,
+          { feedType: string; count: number; total?: number }
+        >,
         count: 0,
         babyId,
       }
@@ -129,59 +136,278 @@ export class FeedRecordStatisticsService extends BaseService {
   async statistics(options: Partial<FeedRecordUpdateDTO>) {
     const { babyId, startFeedTime, endFeedTime } = options;
 
-    const list = await this.feedRecordModel
-      .createQueryBuilder('record')
-      .select([
-        'COUNT(*) AS count',
-        'record.createId AS createId',
-        'record.feedType AS feedType',
-        "SUM(JSON_EXTRACT(record.content, '$.volume')) AS total",
-        'DATE(record.feedTime) AS feedDate',
-      ])
-      .where('record.babyId = :babyId', { babyId })
-      .andWhere('record.feedTime BETWEEN :startFeedTime AND :endFeedTime', {
-        startFeedTime,
-        endFeedTime,
-      })
-      .groupBy('feedDate, feedType, createId')
-      .orderBy('feedDate')
-      .getRawMany();
+    //获取指定时间范围内的宝宝喂养记录
+    const list = await this.feedRecordModel.find({
+      select: ['createId', 'feedType', 'content', 'feedTime'],
+      where: {
+        babyId,
+        feedTime: Between(startFeedTime, endFeedTime),
+      },
+    });
 
-    // 按照 feedDate 合并数据,合并feedDate的数据
-    // 规则: total 相加组成信息的total,count 相加组成信息的count,createUsers 合并组成信息的createUsers,feedTypeInfo
+    // 定义统计映射类型
+    interface FeedRecordStat {
+      count: number;
+      lastFeedTime: string;
+      lastFeedUid: string;
+      total?: number;
+      duration?: number;
+      // 按用户维度的详细统计
+      userStats: Record<string, FeedStatBase>;
+      // 用于尿布类型的额外信息，key为 poopType_poopColor 格式
+      diaperInfo?: Record<string, { count: number }>;
+    }
+
+    type FeedRecordStatisticsMap = Record<
+      string,
+      Record<string, FeedRecordStat>
+    >;
+
+    // 按日期和喂养类型聚合数据
     const groupeMap = list.reduce((acc, cur) => {
-      const date = dateFormat(cur.feedDate, 'YYYY-MM-DD');
-      const count = +cur.count || 0;
-      const total = +cur.total || 0;
+      const date = dateFormat(cur.feedTime, 'YYYY-MM-DD');
+      const feedTime = useDate(cur.feedTime).format('YYYY-MM-DD HH:mm:ss');
+
+      // 初始化日期
       if (!acc[date]) {
-        acc[date] = Object.assign(new FeedRecordStatistics(), {
-          babyId,
-          feedDate: date,
-          count: count,
-          details: [
-            {
-              createId: cur.createId,
-              feedType: cur.feedType,
-              count: count,
-              total: total,
-            },
-          ],
+        acc[date] = {} as FeedRecordStatisticsMap[''];
+      }
+
+      // 初始化该日期该喂养类型的记录
+      if (!acc[date][cur.feedType]) {
+        acc[date][cur.feedType] = {
+          count: 0,
+          total: 0,
+          duration: 0,
+          lastFeedTime: feedTime,
+          lastFeedUid: cur.createId,
+          userStats: {} as Record<string, FeedStatBase>,
+          diaperInfo: undefined,
+        };
+      }
+
+      // 初始化该用户的统计信息
+      if (!acc[date][cur.feedType].userStats[cur.createId]) {
+        acc[date][cur.feedType].userStats[cur.createId] = {
+          count: 0,
+          lastFeedTime: feedTime,
+          lastFeedUid: cur.createId,
+          feedType: cur.feedType as EnumFeedType,
+        };
+      }
+
+      // 更新总计数
+      acc[date][cur.feedType].count += 1;
+
+      // 更新用户维度的计数
+      acc[date][cur.feedType].userStats[cur.createId].count += 1;
+
+      // 只保留当天 06:00 之前的最晚时间
+      const curFeedTime = useDate(feedTime);
+      const sixAm = curFeedTime.startOf('day').add(6, 'hour');
+
+      // 更新最晚喂养时间和用户ID（只计算凌晨6点前的最晚时间）
+      if (
+        curFeedTime.isBefore(sixAm) &&
+        useDate(feedTime).isAfter(useDate(acc[date][cur.feedType].lastFeedTime))
+      ) {
+        acc[date][cur.feedType].lastFeedTime = feedTime;
+        acc[date][cur.feedType].lastFeedUid = cur.createId;
+      }
+
+      // 更新用户维度的最晚喂养时间（只计算凌晨6点前的最晚时间）
+      if (
+        curFeedTime.isBefore(sixAm) &&
+        useDate(feedTime).isAfter(
+          useDate(acc[date][cur.feedType].userStats[cur.createId].lastFeedTime)
+        )
+      ) {
+        acc[date][cur.feedType].userStats[cur.createId].lastFeedTime = feedTime;
+        acc[date][cur.feedType].userStats[cur.createId].lastFeedUid =
+          cur.createId;
+      }
+
+      // 根据不同喂养类型处理特定数据
+      switch (cur.feedType) {
+        case EnumFeedType.MILK_BOTTLE:
+          // 确保total有初始值0
+          if (!acc[date][cur.feedType].total) {
+            acc[date][cur.feedType].total = 0;
+          }
+          if (!acc[date][cur.feedType].userStats[cur.createId].total) {
+            acc[date][cur.feedType].userStats[cur.createId].total = 0;
+          }
+          acc[date][cur.feedType].total += +cur.content?.volume || 0;
+          acc[date][cur.feedType].userStats[cur.createId].total +=
+            +cur.content?.volume || 0;
+          break;
+        case EnumFeedType.BREAST_FEED_DIRECT:
+          // 确保duration有初始值0
+          if (!acc[date][cur.feedType].duration) {
+            acc[date][cur.feedType].duration = 0;
+          }
+          if (
+            acc[date][cur.feedType].userStats[cur.createId].duration ===
+            undefined
+          ) {
+            acc[date][cur.feedType].userStats[cur.createId].duration = 0;
+          }
+          acc[date][cur.feedType].duration += +cur.content?.duration || 0;
+          acc[date][cur.feedType].userStats[cur.createId].duration +=
+            +cur.content?.duration || 0;
+          break;
+        case EnumFeedType.DIAPER:
+          // 处理尿布记录，统计尿布类型，key为 poopType_poopColor 格式
+          if (cur.content?.poopType || cur.content?.poopColor) {
+            const key = `${cur.content?.poopType || ''}_${
+              cur.content?.poopColor || ''
+            }`;
+            // 总体统计
+            if (!acc[date][cur.feedType].diaperInfo) {
+              acc[date][cur.feedType].diaperInfo = {} as Record<
+                string,
+                { count: number }
+              >;
+            }
+            if (!acc[date][cur.feedType].diaperInfo[key]) {
+              acc[date][cur.feedType].diaperInfo[key] = {
+                count: 0,
+              };
+            }
+            acc[date][cur.feedType].diaperInfo[key].count += 1;
+          }
+          break;
+        case EnumFeedType.HEIGHT_WEIGHT:
+          // 身高体重记录处理
+          // 可以根据需要添加特定的处理逻辑
+          break;
+        default:
+          // 处理其他喂养类型，只统计count，不汇总total
+          break;
+      }
+
+      return acc;
+    }, {} as Record<string, Record<string, FeedRecordStat>>);
+
+    // 转换为 FeedRecordStatistics 实体数组
+    const groupedList: FeedRecordStatistics[] = Object.entries(groupeMap).map(
+      ([feedDate, typeMap]) => {
+        let totalCount = 0;
+
+        // 初始化各喂养类型聚合字段，按照实体定义的结构
+        let milkBottle: FeedRecordStatistics['milkBottle'] = {
+          total: 0,
+          count: 0,
+          lastFeedTime: '',
+          lastFeedUid: '',
+          feedType: EnumFeedType.MILK_BOTTLE,
+        };
+        let breastFeedDirect: FeedRecordStatistics['breastFeedDirect'] = {
+          duration: 0,
+          count: 0,
+          lastFeedTime: '',
+          lastFeedUid: '',
+          feedType: EnumFeedType.BREAST_FEED_DIRECT,
+        };
+        let diaper: FeedRecordStatistics['diaper'] = {
+          count: 0,
+          lastFeedTime: '',
+          lastFeedUid: '',
+          feedType: EnumFeedType.DIAPER,
+        };
+        let heightWeight: FeedRecordStatistics['heightWeight'] = {
+          count: 0,
+          lastFeedTime: '',
+          lastFeedUid: '',
+          feedType: EnumFeedType.HEIGHT_WEIGHT,
+        };
+        // 初始化其他喂养类型列表
+        const otherFeedList: FeedRecordStatistics['otherFeedList'] = [];
+
+        // 遍历每种喂养类型的数据
+        Object.entries(typeMap).forEach(([feedType, stat]) => {
+          const feedTypeNum = +feedType;
+          totalCount += stat.count || 0;
+
+          // 根据喂养类型设置相应的聚合字段
+          switch (feedTypeNum) {
+            case EnumFeedType.MILK_BOTTLE:
+              milkBottle = {
+                total: stat.total || 0,
+                count: stat.count || 0,
+                lastFeedTime: stat.lastFeedTime,
+                lastFeedUid: stat.lastFeedUid || '',
+                feedType: EnumFeedType.MILK_BOTTLE,
+                // 添加用户维度的详细统计
+                ...stat.userStats,
+              };
+              break;
+            case EnumFeedType.BREAST_FEED_DIRECT:
+              breastFeedDirect = {
+                duration: stat.duration || 0,
+                count: stat.count || 0,
+                lastFeedTime: stat.lastFeedTime,
+                lastFeedUid: stat.lastFeedUid || '',
+                feedType: EnumFeedType.BREAST_FEED_DIRECT,
+                // 添加用户维度的详细统计
+                ...stat.userStats,
+              };
+              break;
+            case EnumFeedType.DIAPER:
+              // 基础尿布信息
+              diaper = {
+                count: stat.count || 0,
+                lastFeedTime: stat.lastFeedTime,
+                lastFeedUid: stat.lastFeedUid || '',
+                feedType: EnumFeedType.DIAPER,
+                // 添加用户维度的详细统计
+                ...stat.userStats,
+              };
+              // 如果有尿布类型信息，添加到diaper对象中
+              if (stat.diaperInfo) {
+                Object.assign(diaper, stat.diaperInfo);
+              }
+              break;
+            case EnumFeedType.HEIGHT_WEIGHT:
+              // 身高体重信息
+              heightWeight = {
+                count: stat.count || 0,
+                lastFeedTime: stat.lastFeedTime,
+                lastFeedUid: stat.lastFeedUid || '',
+                feedType: EnumFeedType.HEIGHT_WEIGHT,
+                // 添加用户维度的详细统计
+                ...stat.userStats,
+              };
+              break;
+            default:
+              {
+                // 处理其他喂养类型，添加到otherFeedList中
+                const otherFeedItem: FeedStatBase = {
+                  count: stat.count || 0,
+                  lastFeedTime: stat.lastFeedTime,
+                  lastFeedUid: stat.lastFeedUid || '',
+                  feedType: feedTypeNum as EnumFeedType,
+                  // 添加用户维度的详细统计
+                  ...stat.userStats,
+                };
+                otherFeedList.push(otherFeedItem);
+              }
+              break;
+          }
         });
-      } else {
-        acc[date].count += count;
-        acc[date].details.push({
-          createId: cur.createId,
-          feedType: cur.feedType,
-          count: count,
-          total: total,
+
+        return Object.assign(new FeedRecordStatistics(), {
+          babyId,
+          feedDate,
+          count: totalCount,
+          milkBottle,
+          breastFeedDirect,
+          diaper,
+          heightWeight,
+          otherFeedList,
         });
       }
-      return acc;
-    }, {} as Record<string, FeedRecordStatistics>);
-
-    // 转换为数组
-    const groupedList = Object.values(groupeMap);
-
+    );
     await this.feedRecordStatisticsModel.save(groupedList);
     return groupedList;
   }
