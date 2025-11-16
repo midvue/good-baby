@@ -46,7 +46,13 @@ export class JwtMiddleware {
       await next();
     };
   }
-  whiteList = ['/', '/sys/auth/token', '/dict/batch', '/app/account/wxLogin'];
+  whiteList = [
+    '/',
+    '/sys/auth/token',
+    '/dict/batch',
+    '/app/account/wxLogin',
+    // '/baby/feedRecordStatistics/statistics',
+  ];
   // 配置忽略鉴权的路由地址
   public match(ctx: Context): boolean {
     const ignore = this.whiteList.includes(ctx.path);

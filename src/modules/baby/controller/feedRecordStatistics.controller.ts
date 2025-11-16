@@ -29,8 +29,18 @@ export class FeedRecordStatisticsController extends BaseController {
   @Post('/statistics')
   @ApiOperation({ summary: '统计宝宝每日的数据' })
   async statistics(@Body() feedDto: FeedRecordUpdateDTO) {
-    const res = await this.feedRecordStatisticsService.statistics(feedDto);
-    return this.success(res);
+    const babyIds = await this.feedRecordStatisticsService.getBabyIdList(
+      feedDto
+    );
+    // 统计每个宝宝的喂养记录
+    for (const babyId of babyIds) {
+      await this.feedRecordStatisticsService.statistics({
+        ...feedDto,
+        babyId,
+      });
+    }
+    // const res = await this.feedRecordStatisticsService.statistics(feedDto);
+    return this.success('统计成功');
   }
 
   @Post('/week')

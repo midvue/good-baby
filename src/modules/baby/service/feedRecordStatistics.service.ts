@@ -395,8 +395,9 @@ export class FeedRecordStatisticsService extends BaseService {
       lastFeedUid: string;
       total?: number;
       duration?: number;
+      singleMaxTotal?: number;
       // 按用户维度的详细统计
-      userStats: Record<string, FeedStatBase>;
+      userStats: Record<string, Omit<FeedStatBase, 'userStatList'>>;
       // 用于尿布类型的额外信息，key为 poopType_poopColor 格式
       diaperInfo?: Record<string, { count: number }>;
     }
@@ -422,9 +423,10 @@ export class FeedRecordStatisticsService extends BaseService {
           count: 0,
           total: 0,
           duration: 0,
+          singleMaxTotal: 0,
           lastFeedTime: feedTime,
           lastFeedUid: cur.createId,
-          userStats: {} as Record<string, FeedStatBase>,
+          userStats: {} as Record<string, Omit<FeedStatBase, 'userStatList'>>,
           diaperInfo: undefined,
         };
       }
@@ -435,7 +437,7 @@ export class FeedRecordStatisticsService extends BaseService {
           count: 0,
           lastFeedTime: feedTime,
           lastFeedUid: cur.createId,
-          feedType: cur.feedType as EnumFeedType,
+          feedType: cur.feedType,
         };
       }
 
@@ -473,16 +475,23 @@ export class FeedRecordStatisticsService extends BaseService {
       // 根据不同喂养类型处理特定数据
       switch (cur.feedType) {
         case EnumFeedType.MILK_BOTTLE:
-          // 确保total有初始值0
-          if (!acc[date][cur.feedType].total) {
-            acc[date][cur.feedType].total = 0;
+          {
+            // 确保total有初始值0
+            if (!acc[date][cur.feedType].total) {
+              acc[date][cur.feedType].total = 0;
+            }
+            if (!acc[date][cur.feedType].userStats[cur.createId].total) {
+              acc[date][cur.feedType].userStats[cur.createId].total = 0;
+            }
+            const volume = cur.content.volume || 0;
+            acc[date][cur.feedType].total += volume;
+            acc[date][cur.feedType].userStats[cur.createId].total += volume;
+
+            // 更新单次最大喂养量
+            if (volume > acc[date][cur.feedType].singleMaxTotal) {
+              acc[date][cur.feedType].singleMaxTotal = volume;
+            }
           }
-          if (!acc[date][cur.feedType].userStats[cur.createId].total) {
-            acc[date][cur.feedType].userStats[cur.createId].total = 0;
-          }
-          acc[date][cur.feedType].total += +cur.content?.volume || 0;
-          acc[date][cur.feedType].userStats[cur.createId].total +=
-            +cur.content?.volume || 0;
           break;
         case EnumFeedType.BREAST_FEED_DIRECT:
           // 确保duration有初始值0
@@ -544,6 +553,8 @@ export class FeedRecordStatisticsService extends BaseService {
           lastFeedTime: '',
           lastFeedUid: '',
           feedType: EnumFeedType.MILK_BOTTLE,
+          userStatList: [],
+          singleMaxTotal: 0,
         };
         let breastFeedDirect: FeedRecordStatistics['breastFeedDirect'] = {
           duration: 0,
@@ -551,18 +562,21 @@ export class FeedRecordStatisticsService extends BaseService {
           lastFeedTime: '',
           lastFeedUid: '',
           feedType: EnumFeedType.BREAST_FEED_DIRECT,
+          userStatList: [],
         };
         let diaper: FeedRecordStatistics['diaper'] = {
           count: 0,
           lastFeedTime: '',
           lastFeedUid: '',
           feedType: EnumFeedType.DIAPER,
+          userStatList: [],
         };
         let heightWeight: FeedRecordStatistics['heightWeight'] = {
           count: 0,
           lastFeedTime: '',
           lastFeedUid: '',
           feedType: EnumFeedType.HEIGHT_WEIGHT,
+          userStatList: [],
         };
         // 初始化其他喂养类型列表
         const otherFeedList: FeedRecordStatistics['otherFeedList'] = [];
@@ -581,8 +595,8 @@ export class FeedRecordStatisticsService extends BaseService {
                 lastFeedTime: stat.lastFeedTime,
                 lastFeedUid: stat.lastFeedUid || '',
                 feedType: EnumFeedType.MILK_BOTTLE,
-                // 添加用户维度的详细统计
-                ...stat.userStats,
+                userStatList: Object.values(stat.userStats),
+                singleMaxTotal: stat.singleMaxTotal || 0,
               };
               break;
             case EnumFeedType.BREAST_FEED_DIRECT:
@@ -592,8 +606,7 @@ export class FeedRecordStatisticsService extends BaseService {
                 lastFeedTime: stat.lastFeedTime,
                 lastFeedUid: stat.lastFeedUid || '',
                 feedType: EnumFeedType.BREAST_FEED_DIRECT,
-                // 添加用户维度的详细统计
-                ...stat.userStats,
+                userStatList: Object.values(stat.userStats),
               };
               break;
             case EnumFeedType.DIAPER:
@@ -603,8 +616,7 @@ export class FeedRecordStatisticsService extends BaseService {
                 lastFeedTime: stat.lastFeedTime,
                 lastFeedUid: stat.lastFeedUid || '',
                 feedType: EnumFeedType.DIAPER,
-                // 添加用户维度的详细统计
-                ...stat.userStats,
+                userStatList: Object.values(stat.userStats),
               };
               // 如果有尿布类型信息，添加到diaper对象中
               if (stat.diaperInfo) {
@@ -618,8 +630,7 @@ export class FeedRecordStatisticsService extends BaseService {
                 lastFeedTime: stat.lastFeedTime,
                 lastFeedUid: stat.lastFeedUid || '',
                 feedType: EnumFeedType.HEIGHT_WEIGHT,
-                // 添加用户维度的详细统计
-                ...stat.userStats,
+                userStatList: Object.values(stat.userStats),
               };
               break;
             default:
@@ -630,8 +641,7 @@ export class FeedRecordStatisticsService extends BaseService {
                   lastFeedTime: stat.lastFeedTime,
                   lastFeedUid: stat.lastFeedUid || '',
                   feedType: feedTypeNum as EnumFeedType,
-                  // 添加用户维度的详细统计
-                  ...stat.userStats,
+                  userStatList: Object.values(stat.userStats),
                 };
                 otherFeedList.push(otherFeedItem);
               }

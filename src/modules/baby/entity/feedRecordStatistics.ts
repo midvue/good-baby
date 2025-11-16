@@ -10,7 +10,8 @@ export interface FeedStatBase {
   total?: number;
   duration?: number;
   feedType: EnumFeedType;
-  [key: string]: string | number | undefined | FeedStatBase;
+  userStatList: Omit<FeedStatBase, 'userStatList' | 'singleMaxTotal'>[];
+  singleMaxTotal?: number;
 }
 
 /**
