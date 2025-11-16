@@ -43,7 +43,7 @@ export class AccountService extends BaseService {
         dataType: 'json',
       }
     );
-    let session = data as Code2sessionData;
+    const session = data as Code2sessionData;
     if (!session.openid) {
       return this.commError(session.errcode, session.errmsg);
     }

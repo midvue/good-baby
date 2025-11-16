@@ -13,7 +13,6 @@ import {
 } from '../dto/feedRecord.dto';
 import { FeedRecord } from '../entity/feedRecord';
 import { PointsRecordService } from '../../points/service/pointsRecord.service';
-import { log } from 'console';
 
 @Provide()
 export class FeedRecordService extends BaseService {
@@ -48,7 +47,6 @@ export class FeedRecordService extends BaseService {
     });
     // 提取所有 babyIds（去重，避免重复查询）
     const babyIds = [...new Set(list.map(item => item.babyId).filter(Boolean))];
-    log('babyIds', babyIds);
     if (babyIds.length > 0) {
       // 批量查询用户昵称（假设用户服务有此方法，返回 { userId: nickname } 映射）
       const userNicknames = await this.babyService.getNicknamesByIds(babyIds);
