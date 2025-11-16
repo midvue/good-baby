@@ -143,15 +143,27 @@ export class FeedRecordStatisticsService extends BaseService {
               feedType,
               count,
               total,
-              maxTotal: total,
+              dailyMaxTotal: total,
+              maxTotalDate: cur.feedDate,
+
+              dailyMaxCount: count,
+              maxCountDate: cur.feedDate,
+              days: 1,
             };
           } else {
+            acc.detailMap[feedType].days += 1;
             acc.detailMap[feedType].count += count;
             acc.detailMap[feedType].total += total;
-            acc.detailMap[feedType].maxTotal = Math.max(
-              acc.detailMap[feedType].maxTotal,
-              total
-            );
+            // 更新最大总喂养量和日期
+            if (total > acc.detailMap[feedType].dailyMaxTotal) {
+              acc.detailMap[feedType].dailyMaxTotal = total;
+              acc.detailMap[feedType].maxTotalDate = cur.feedDate;
+            }
+            // 更新最大次数和日期
+            if (count > acc.detailMap[feedType].dailyMaxCount) {
+              acc.detailMap[feedType].dailyMaxCount = count;
+              acc.detailMap[feedType].maxCountDate = cur.feedDate;
+            }
           }
 
           // 更新全局最新的喂养时间
@@ -178,16 +190,28 @@ export class FeedRecordStatisticsService extends BaseService {
               count,
               total,
               duration,
-              maxDuration: duration,
+              dailyMaxDuration: duration,
+              maxDurationDate: cur.feedDate,
+              dailyMaxCount: count,
+              maxCountDate: cur.feedDate,
+              days: 1,
             };
           } else {
+            acc.detailMap[feedType].days += 1;
             acc.detailMap[feedType].count += count;
             acc.detailMap[feedType].total += total;
             acc.detailMap[feedType].duration += duration;
-            acc.detailMap[feedType].maxDuration = Math.max(
-              acc.detailMap[feedType].maxDuration,
-              duration
-            );
+            // 更新最大持续时间和日期
+            if (duration > acc.detailMap[feedType].dailyMaxDuration) {
+              acc.detailMap[feedType].dailyMaxDuration = duration;
+              acc.detailMap[feedType].maxDurationDate = cur.feedDate;
+            }
+
+            // 更新最大次数和日期
+            if (count > acc.detailMap[feedType].dailyMaxCount) {
+              acc.detailMap[feedType].dailyMaxCount = count;
+              acc.detailMap[feedType].maxCountDate = cur.feedDate;
+            }
           }
 
           // 更新全局最新的喂养时间
@@ -210,9 +234,18 @@ export class FeedRecordStatisticsService extends BaseService {
             acc.detailMap[feedType] = {
               feedType,
               count,
+              days: 1,
+              dailyMaxCount: count,
+              maxCountDate: cur.feedDate,
             };
           } else {
+            acc.detailMap[feedType].days += 1;
             acc.detailMap[feedType].count += count;
+            // 更新最大次数和日期
+            if (count > acc.detailMap[feedType].dailyMaxCount) {
+              acc.detailMap[feedType].dailyMaxCount = count;
+              acc.detailMap[feedType].maxCountDate = cur.feedDate;
+            }
           }
 
           // 更新全局最新的喂养时间
@@ -257,9 +290,18 @@ export class FeedRecordStatisticsService extends BaseService {
                 acc.detailMap[feedType] = {
                   feedType,
                   count,
+                  days: 1,
+                  dailyMaxCount: count,
+                  maxCountDate: cur.feedDate,
                 };
               } else {
                 acc.detailMap[feedType].count += count;
+                acc.detailMap[feedType].days += 1;
+                // 更新最大次数和日期
+                if (count > acc.detailMap[feedType].dailyMaxCount) {
+                  acc.detailMap[feedType].dailyMaxCount = count;
+                  acc.detailMap[feedType].maxCountDate = cur.feedDate;
+                }
               }
 
               // 更新全局最新的喂养时间
@@ -279,13 +321,27 @@ export class FeedRecordStatisticsService extends BaseService {
           string,
           {
             feedType: EnumFeedType;
+            /** 总喂养次数 */
             count: number;
+            /** 每日最大喂养次数 */
+            dailyMaxCount?: number;
+            /** 最大喂养次数对应日期 */
+            maxCountDate?: string;
+            /** 总喂养量 */
             total?: number;
-            /** 最大总喂养量 */
-            maxTotal?: number;
+            /** 每日最大总喂养量 */
+            dailyMaxTotal?: number;
+            /** 最大喂养量对应日期 */
+            maxTotalDate?: string;
+
+            /** 母乳总喂养时间 */
             duration?: number;
-            /** 最大母乳喂养时间 */
-            maxDuration?: number;
+            /** 每日最大母乳喂养时间 */
+            dailyMaxDuration?: number;
+            /** 最大母乳喂养时间对应日期 */
+            maxDurationDate?: string;
+            /** 记录的天数 */
+            days?: number;
           }
         >,
         count: 0,
