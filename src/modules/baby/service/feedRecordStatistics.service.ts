@@ -19,21 +19,6 @@ export class FeedRecordStatisticsService extends BaseService {
   @InjectEntityModel(FeedRecordStatistics)
   feedRecordStatisticsModel: Repository<FeedRecordStatistics>;
 
-  /**
-   * 判断是否为有效的最新喂养时间（只计算凌晨6点前的最晚时间）
-   * @param newTime 新的时间
-   * @param currentTime 当前记录的时间
-   * @returns 是否为更晚的有效时间
-   */
-  private isLatestFeedTime(newTime: string, currentTime: string) {
-    const newFeedTime = useDate(newTime);
-    const sixAm = newFeedTime.startOf('day').add(6, 'hour');
-    if (newFeedTime.isAfter(sixAm)) return false;
-    if (!currentTime) return true;
-    // 只有当新时间在凌晨6点之前，并且比当前记录的时间更晚时才更新
-    return newFeedTime.isAfter(useDate(currentTime));
-  }
-
   async page(options: Partial<FeedRecordPageDTO>) {
     const { id, feedType, startFeedTime, endFeedTime, babyId } = options;
 
@@ -106,6 +91,29 @@ export class FeedRecordStatisticsService extends BaseService {
     }
   }
 
+  /**
+   * 处理userStat统计
+   * @param acc 累加器对象
+   * @param userStatList 用户统计列表
+   */
+  private processUserStat(
+    acc: { userStat: Record<string, { count: number }> },
+    userStatList: { lastFeedUid?: string; count?: number }[]
+  ) {
+    if (userStatList.length > 0) {
+      userStatList.forEach(stat => {
+        const { lastFeedUid, count = 0 } = stat;
+        if (lastFeedUid) {
+          if (!acc.userStat[lastFeedUid]) {
+            acc.userStat[lastFeedUid] = { count };
+          } else {
+            acc.userStat[lastFeedUid].count += count;
+          }
+        }
+      });
+    }
+  }
+
   /** 获取周统计
    * @param option 查询参数
    */
@@ -137,6 +145,8 @@ export class FeedRecordStatisticsService extends BaseService {
             total = 0,
             lastFeedTime,
             lastFeedUid,
+            singleMaxTotal = 0,
+            userStatList = [],
           } = cur.milkBottle;
           if (!acc.detailMap[feedType]) {
             acc.detailMap[feedType] = {
@@ -145,10 +155,10 @@ export class FeedRecordStatisticsService extends BaseService {
               total,
               dailyMaxTotal: total,
               maxTotalDate: cur.feedDate,
-
               dailyMaxCount: count,
               maxCountDate: cur.feedDate,
               days: 1,
+              singleMaxTotal: singleMaxTotal,
             };
           } else {
             acc.detailMap[feedType].days += 1;
@@ -164,7 +174,14 @@ export class FeedRecordStatisticsService extends BaseService {
               acc.detailMap[feedType].dailyMaxCount = count;
               acc.detailMap[feedType].maxCountDate = cur.feedDate;
             }
+            // 更新最大单次喂养量
+            if (singleMaxTotal > acc.detailMap[feedType].singleMaxTotal) {
+              acc.detailMap[feedType].singleMaxTotal = singleMaxTotal;
+            }
           }
+
+          // 处理userStat统计
+          this.processUserStat(acc, userStatList);
 
           // 更新全局最新的喂养时间
           this.updateGlobalLastFeedTime(acc, {
@@ -183,6 +200,7 @@ export class FeedRecordStatisticsService extends BaseService {
             duration = 0,
             lastFeedTime,
             lastFeedUid,
+            userStatList = [],
           } = cur.breastFeedDirect;
           if (!acc.detailMap[feedType]) {
             acc.detailMap[feedType] = {
@@ -214,6 +232,9 @@ export class FeedRecordStatisticsService extends BaseService {
             }
           }
 
+          // 处理userStat统计
+          this.processUserStat(acc, userStatList);
+
           // 更新全局最新的喂养时间
           this.updateGlobalLastFeedTime(acc, {
             lastFeedTime,
@@ -229,6 +250,7 @@ export class FeedRecordStatisticsService extends BaseService {
             count = 0,
             lastFeedTime,
             lastFeedUid,
+            userStatList = [],
           } = cur.diaper;
           if (!acc.detailMap[feedType]) {
             acc.detailMap[feedType] = {
@@ -248,6 +270,9 @@ export class FeedRecordStatisticsService extends BaseService {
             }
           }
 
+          // 处理userStat统计
+          this.processUserStat(acc, userStatList);
+
           // 更新全局最新的喂养时间
           this.updateGlobalLastFeedTime(acc, {
             lastFeedTime,
@@ -263,6 +288,7 @@ export class FeedRecordStatisticsService extends BaseService {
             count = 0,
             lastFeedTime,
             lastFeedUid,
+            userStatList = [],
           } = cur.heightWeight;
           if (!acc.detailMap[feedType]) {
             acc.detailMap[feedType] = {
@@ -272,6 +298,9 @@ export class FeedRecordStatisticsService extends BaseService {
           } else {
             acc.detailMap[feedType].count += count;
           }
+
+          // 处理userStat统计
+          this.processUserStat(acc, userStatList);
 
           // 更新全局最新的喂养时间
           this.updateGlobalLastFeedTime(acc, {
@@ -284,7 +313,13 @@ export class FeedRecordStatisticsService extends BaseService {
         // 处理其他喂养类型数据
         if (cur.otherFeedList && Array.isArray(cur.otherFeedList)) {
           cur.otherFeedList.forEach(item => {
-            const { feedType, count = 0, lastFeedTime, lastFeedUid } = item;
+            const {
+              feedType,
+              count = 0,
+              lastFeedTime,
+              lastFeedUid,
+              userStatList = [],
+            } = item;
             if (feedType) {
               if (!acc.detailMap[feedType]) {
                 acc.detailMap[feedType] = {
@@ -303,6 +338,9 @@ export class FeedRecordStatisticsService extends BaseService {
                   acc.detailMap[feedType].maxCountDate = cur.feedDate;
                 }
               }
+
+              // 处理userStat统计
+              this.processUserStat(acc, userStatList);
 
               // 更新全局最新的喂养时间
               this.updateGlobalLastFeedTime(acc, {
@@ -342,6 +380,7 @@ export class FeedRecordStatisticsService extends BaseService {
             maxDurationDate?: string;
             /** 记录的天数 */
             days?: number;
+            singleMaxTotal?: number;
           }
         >,
         count: 0,
@@ -349,6 +388,7 @@ export class FeedRecordStatisticsService extends BaseService {
         lastFeedUid: '',
         lastFeedType: EnumFeedType.MILK_BOTTLE, // 默认值
         babyId,
+        userStat: {} as Record<string, { count: number }>,
       }
     );
 
