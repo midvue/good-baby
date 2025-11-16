@@ -40,7 +40,6 @@ export class AIService extends BaseService {
           ] 
           5. 结果直接返回[开头,结尾]的JSON代码,不要有任何其他无关的内容,也不要有任何其他的注释,说明
         `;
-    console.log(content);
 
     const completion = await openai.chat.completions.create({
       messages: [

@@ -58,7 +58,6 @@ export class FeedRecordService extends BaseService {
         item.nickname = userNicknames[item.babyId] || ''; // 无昵称时显示空字符串
       });
     }
-    console.log('list', list);
     return { list, count };
   }
 
