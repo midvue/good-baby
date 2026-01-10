@@ -47,4 +47,13 @@ export class AINameDTO {
     example: '平凡的人',
   })
   remark: string;
+
+  //用户id
+  @Rule(RuleType.string().empty(''))
+  @ApiProperty({
+    description: '用户id',
+    required: false,
+    example: '123456',
+  })
+  userId: string;
 }

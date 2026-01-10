@@ -1,7 +1,10 @@
 import { Column, Entity } from 'typeorm';
 import { SnowIdBaseEntity } from '../../base/base.entity';
 
-@Entity()
+@Entity({
+  comment: '胎动记录表',
+  name: 'fetal_movement',
+})
 export class FetalMovement extends SnowIdBaseEntity {
   @Column({ comment: '用户ID' })
   userId: string;

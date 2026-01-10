@@ -1,7 +1,10 @@
 import { Column, Entity } from 'typeorm';
 import { SnowIdBaseEntity } from '../../base/base.entity';
 
-@Entity()
+@Entity({
+  comment: '红包记录表',
+  name: 'red_packet',
+})
 export class RedPacket extends SnowIdBaseEntity {
   @Column({ comment: '用户ID' })
   userId: string;

@@ -22,13 +22,17 @@ export interface FeedStatBase {
 })
 @Entity('baby_feed_record_statistics', { comment: '宝宝喂养记录统计' })
 export class FeedRecordStatistics extends SnowIdBaseEntity {
-  @Column({ name: 'baby_id', comment: '宝宝id' })
+  @Column({ name: 'baby_id', comment: '宝宝id', length: 32 })
   babyId: string;
 
   @Column({ name: 'count', comment: '喂养总次数', type: 'int' })
   count: number;
 
-  @Column({ name: 'feed_date', comment: '喂养日期', type: 'timestamp' })
+  @Column({
+    name: 'feed_date',
+    comment: '喂养日期',
+    type: 'timestamp',
+  })
   feedDate: string;
 
   @Column({ name: 'milk_bottle', comment: '奶瓶喂养详情', type: 'json' })

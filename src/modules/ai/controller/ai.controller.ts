@@ -18,6 +18,7 @@ export class AIController extends BaseController {
   @Post('/names')
   @ApiOperation({ summary: '调用火山引擎 AIP 接口' })
   async names(@Body() nameDto: AINameDTO) {
+    nameDto.userId = this.ctx.uid;
     const res = await this.aiService.names(nameDto);
     return this.success(res);
   }

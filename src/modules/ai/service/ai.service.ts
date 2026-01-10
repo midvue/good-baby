@@ -1,8 +1,10 @@
-import { Config, Provide } from '@midwayjs/core';
+import { Config, Inject, Provide } from '@midwayjs/core';
 import OpenAI from 'openai';
 import { BaseService } from '../../base/base.service';
 import { AINameDTO } from '../dto/ai.dto';
 import { EnumYesNoPlus } from '@mid-vue/shared';
+import { NameService } from './name.service';
+import { count } from 'console';
 
 /**
  * AI 模块服务
@@ -11,6 +13,9 @@ import { EnumYesNoPlus } from '@mid-vue/shared';
 export class AIService extends BaseService {
   @Config('ai')
   ai: { volcengine: { apiKey: string; baseURL: string } };
+
+  @Inject()
+  nameService: NameService;
 
   /**
    * 调用ai模型取名
@@ -29,16 +34,10 @@ export class AIService extends BaseService {
               : ''
           }
           ${dto.remark ? '备注:' + dto.remark : ''}
-          1. 参考诗经,论语,礼记,楚辞,周易,唐诗,宋词等经典文本里面取字组合,生成30个名字,并返回对应的寓意典故
-          2. 另外从现在流行的字中组合名字,生成20个名字,并返回名字的寓意,
-          3. 一共返回50个名字(name),同时还返回对应的寓意典故(desc)长度在30个汉字以内
-          4. 返回的结果结构为:
-          [
-            [{name:'',desc:''}],
-            [{name:'',desc:''}],
-            [{name:'',desc:''}]
-          ] 
-          5. 结果直接返回[开头,结尾]的JSON代码,不要有任何其他无关的内容,也不要有任何其他的注释,说明
+          1. 参考诗经,论语,礼记,楚辞,周易,唐诗,宋词等经典文本里面取字组合,生成30个名字
+          2. 另外从现在流行的字中组合名字,生成20个名字
+          3. 一共返回50个不重复名字(name),2-4个字符
+          4. 返回的结果结构为[string]的JSON代码,名字之间用逗号隔开,一定要是正常的json,不能有任何其他的注释,说明
         `;
 
     const completion = await openai.chat.completions.create({
@@ -52,9 +51,28 @@ export class AIService extends BaseService {
           content,
         },
       ],
-      model: 'deepseek-v3-250324',
-      //model: 'kimi-k2-250711',
+      // model: 'deepseek-v3-250324',
+      model: 'kimi-k2-250905',
     });
-    return JSON.parse(completion.choices[0].message.content);
+    const names = JSON.parse(completion.choices[0].message.content);
+    if (!Array.isArray(names)) {
+      throw new Error('返回结果不是数组');
+    }
+    console.log(names);
+    //names去重
+    const list = [...new Set(names)].map(name => {
+      return {
+        name,
+        gender: dto.gender,
+        userId: dto.userId,
+        desc: '',
+      };
+    });
+
+    // 新增姓名
+    await this.nameService.add(list);
+
+    console.log(list);
+    return list;
   }
 }
