@@ -18,8 +18,15 @@ export class Name extends BaseEntity {
   @Column({ comment: '性别(10:女,20:男)', length: 8 })
   gender: string;
 
-  @Column({ comment: 'desc', length: 64 })
-  desc: string;
+  @Column({ comment: '姓名详情', type: 'json', nullable: true })
+  desc: {
+    /** 读音 */
+    spell: string;
+    /** 来源 */
+    origin: string;
+    /** 解释 */
+    desc: string;
+  };
 
   @Column({ comment: '次数', default: 0, type: 'int' })
   count: number;

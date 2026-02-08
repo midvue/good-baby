@@ -84,7 +84,6 @@ export class RedPacketService extends BaseService {
       }
       where.amount = amountCondition;
     }
-    console.log(where);
     // 再根据规则 查询当前用户 pointsRecord完成记录
     const list = await this.redPacketModel.find({
       where,

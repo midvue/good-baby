@@ -21,32 +21,13 @@ export class AINameDTO {
   })
   gender: string;
 
-  //出生年月
   @Rule(RuleType.string().empty(''))
   @ApiProperty({
-    description: '婴儿出生年月',
+    description: '上一次查询的姓名',
     required: false,
-    example: '2025-7-31',
+    example: '张三',
   })
-  birthDate: string;
-
-  //出生时间
-  @Rule(RuleType.string().empty(''))
-  @ApiProperty({
-    description: '婴儿出生时间',
-    required: false,
-    example: '12:00:00',
-  })
-  birthTime: string;
-
-  //备注
-  @Rule(RuleType.string().empty(''))
-  @ApiProperty({
-    description: '备注',
-    required: false,
-    example: '平凡的人',
-  })
-  remark: string;
+  lastFindName: string;
 
   //用户id
   @Rule(RuleType.string().empty(''))
@@ -56,4 +37,33 @@ export class AINameDTO {
     example: '123456',
   })
   userId: string;
+}
+
+/**
+ * AI 解释姓名请求参数 DTO
+ */
+export class AiInterpretDTO {
+  @Rule(RuleType.array<string>().required())
+  @ApiProperty({
+    description: '婴儿姓名',
+    required: true,
+    example: '张三,李四',
+  })
+  names: string[];
+
+  @Rule(RuleType.string().empty(''))
+  @ApiProperty({
+    description: '用户id',
+    required: false,
+    example: '123456',
+  })
+  userId: string;
+
+  @Rule(RuleType.string().empty(''))
+  @ApiProperty({
+    description: '婴儿性别',
+    required: false,
+    example: '10',
+  })
+  gender: string;
 }

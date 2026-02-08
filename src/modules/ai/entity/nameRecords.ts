@@ -17,7 +17,4 @@ export class NameRecords extends SnowIdBaseEntity {
 
   @Column({ comment: '性别(10:女,20:男)', length: 8 })
   gender: string;
-
-  @Column({ comment: 'desc', length: 64 })
-  desc: string;
 }

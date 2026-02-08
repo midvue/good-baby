@@ -1,7 +1,7 @@
 import { Body, Controller, Inject, Post } from '@midwayjs/core';
 import { ApiOperation } from '@midwayjs/swagger';
 import { BaseController } from '../../base/base.controller';
-import { AINameDTO } from '../dto/ai.dto';
+import { AiInterpretDTO, AINameDTO } from '../dto/ai.dto';
 import { AIService } from '../service/ai.service';
 
 /**
@@ -20,6 +20,14 @@ export class AIController extends BaseController {
   async names(@Body() nameDto: AINameDTO) {
     nameDto.userId = this.ctx.uid;
     const res = await this.aiService.names(nameDto);
+    return this.success(res);
+  }
+
+  @Post('/interpretNames')
+  @ApiOperation({ summary: '调用火山引擎 AIP 接口' })
+  async interpretNames(@Body() nameDto: AiInterpretDTO) {
+    nameDto.userId = this.ctx.uid;
+    const res = await this.aiService.interpretNames(nameDto);
     return this.success(res);
   }
 }
