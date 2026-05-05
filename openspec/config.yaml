@@ -1,0 +1,43 @@
+schema: spec-driven
+
+# 项目上下文
+# 创建制品时会显示给AI看
+context: |
+  技术栈: Midway.js 4.1.0, TypeScript 5.8.3, TypeORM 0.3.20, MySQL 8.x, Redis, BullMQ
+
+  框架约定:
+    - Controller、Service、Entity、DTO 分层架构
+    - 基类实体包含雪花ID和自动时间戳
+    - JWT 认证中间件
+    - @midwayjs/validate 用于 DTO 验证
+    - @midwayjs/swagger 用于 API 文档（仅本地环境）
+    
+  数据库约定:
+    - MySQL 使用 utf8mb4 字符集
+    - TypeORM 实体继承 BaseEntity
+    - 雪花ID 作为主键
+  
+  模块列表:
+    - account: 用户账户管理
+    - ai: AI取名、姓名解释
+    - baby: 宝宝管理、喂养记录
+    - base: 基础基类
+    - centre: 孕期管理（胎动、宫缩）
+    - dict: 字典管理
+    - points: 积分系统
+    - sys: 系统管理（用户、角色、菜单）
+    - upload: 文件上传
+
+# 制品规则
+rules:
+  proposal:
+    - 包含"目标"和"非目标"章节
+    - 指定受影响的模块
+    - 估算实现工作量
+  tasks:
+    - 任务拆分为最大4小时的块
+    - 包含测试覆盖率要求
+  design:
+    - 包含架构图
+    - 指定数据库 schema 变更
+    - 文档化 API 端点

@@ -82,6 +82,10 @@ export default (appInfo: MidwayAppInfo) => {
         apiKey: process.env['VOLCENGINE_API_KEY'],
         baseURL: process.env['VOLCENGINE_API_BASE_URL'],
       },
+      anthropic: {
+        apiKey: process.env['ANTHROPIC_API_KEY'],
+        baseURL: process.env['ANTHROPIC_BASE_URL'],
+      },
     },
   };
 };

@@ -1,10 +1,9 @@
 import { Config, Inject, Provide } from '@midwayjs/core';
-import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 import { BaseService } from '../../base/base.service';
 import { AiInterpretDTO, AINameDTO } from '../dto/ai.dto';
 import { EnumYesNoPlus } from '@mid-vue/shared';
 import { NameService } from './name.service';
-import { count } from 'console';
 import { Name } from '../entity/name';
 
 /**
@@ -13,7 +12,10 @@ import { Name } from '../entity/name';
 @Provide()
 export class AIService extends BaseService {
   @Config('ai')
-  ai: { volcengine: { apiKey: string; baseURL: string } };
+  ai: {
+    volcengine: { apiKey: string; baseURL: string };
+    anthropic: { apiKey: string; baseURL: string };
+  };
 
   @Inject()
   nameService: NameService;
@@ -29,9 +31,9 @@ export class AIService extends BaseService {
     }
     // names表里面没有的话,调用ai模型取名
     const allNames = await this.nameService.listAll(dto);
-    const openai = new OpenAI({
-      apiKey: this.ai.volcengine.apiKey,
-      baseURL: this.ai.volcengine.baseURL,
+    const anthropic = new Anthropic({
+      apiKey: this.ai.anthropic.apiKey,
+      baseURL: this.ai.anthropic.baseURL,
     });
     const content = `
           我需要给宝宝取一个名字
@@ -45,25 +47,28 @@ export class AIService extends BaseService {
                 allNames.map(item => item.name).join(',')
               : ''
           }
-          5. 返回的结果结构为[string]的JSON代码,名字之间用逗号隔开,一定要是正常的json,不能有任何其他的标点,符合,以及注释
-           
+          5. 返回的结果结构为[string]的数组,标准的Json字符串,名字之间用逗号隔开,不能有任何其他的标点,符合,以及注释
+          6. 结果结构为[string]的数组,每个元素为一个名字
         `;
 
-    const completion = await openai.chat.completions.create({
+    const res = await anthropic.messages.create({
       messages: [
         {
-          role: 'system',
-          content: '你是一个专业的中文汉字专家,专业取名助手',
-        },
-        {
           role: 'user',
-          content,
+          content: content,
         },
       ],
-      // model: 'deepseek-v3-250324',
-      model: 'kimi-k2-250905',
+      system: '你是一个专业的中文汉字专家,专业取名助手',
+      model: 'deepseek-v4-flash',
+      thinking: { type: 'disabled' },
+      max_tokens: 4096,
     });
-    const aiNames = JSON.parse(completion.choices[0].message.content);
+
+    const textContent = (res.content[0] as Anthropic.TextBlock).text;
+    if (!textContent) {
+      throw new Error('返回结果为空');
+    }
+    const aiNames = JSON.parse(textContent);
     if (!Array.isArray(aiNames)) {
       throw new Error('返回结果不是数组');
     }
@@ -99,9 +104,9 @@ export class AIService extends BaseService {
         origin: desc.origin,
       }));
     }
-    const openai = new OpenAI({
-      apiKey: this.ai.volcengine.apiKey,
-      baseURL: this.ai.volcengine.baseURL,
+    const anthropic = new Anthropic({
+      apiKey: this.ai.anthropic.apiKey,
+      baseURL: this.ai.anthropic.baseURL,
     });
     const content = `
           我需要分别解释以下宝宝的姓名
@@ -112,20 +117,22 @@ export class AIService extends BaseService {
           4. 返回的结果结构为[{name:'姓名',spell:'读音', origin:'来源', desc:'解释'}]的JSON代码,一定要是正常的json,不能有任何其他的注释,说明
         `;
 
-    const completion = await openai.chat.completions.create({
+    const res = await anthropic.messages.create({
       messages: [
-        {
-          role: 'system',
-          content: '你是一个专业的中文汉字专家,专业解释姓名助手',
-        },
         {
           role: 'user',
           content,
         },
       ],
-      model: 'kimi-k2-250905',
+      system: '你是一个专业的中文汉字专家,专业解释姓名助手',
+      model: 'deepseek-v4-flash',
+      thinking: { type: 'disabled' },
+      max_tokens: 4096,
     });
-    const aiArr = JSON.parse(completion.choices[0].message.content) as ({
+
+    const textContent = (res.content[0] as Anthropic.TextBlock).text;
+    console.log('textContent:', textContent);
+    const aiArr = JSON.parse(textContent) as ({
       name: string;
     } & Name['desc'])[];
     if (!Array.isArray(aiArr)) {
@@ -135,7 +142,7 @@ export class AIService extends BaseService {
     await this.nameService.updateInterpretNames(aiArr, dto);
 
     // 把aiArr与names已经解释的姓名合并
-    const res = names.map(name => {
+    const result = names.map(name => {
       const ai = aiArr.find(item => item.name === name.name);
       if (!ai) {
         return {
@@ -151,6 +158,6 @@ export class AIService extends BaseService {
       };
     });
 
-    return res;
+    return result;
   }
 }

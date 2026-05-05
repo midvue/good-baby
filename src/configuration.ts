@@ -1,4 +1,9 @@
-import { App, Configuration } from '@midwayjs/core';
+import {
+  CommonJSFileDetector,
+  Configuration,
+  IMidwayApplication,
+  MainApp,
+} from '@midwayjs/core';
 import * as info from '@midwayjs/info';
 import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
@@ -43,10 +48,11 @@ dotenv.config({
     },
   ],
   importConfigs: [join(__dirname, './config')],
+  detector: new CommonJSFileDetector(),
 })
 export class MainConfiguration {
-  @App('koa')
-  app: koa.Application;
+  @MainApp()
+  app: IMidwayApplication;
 
   async onReady() {
     // add middleware

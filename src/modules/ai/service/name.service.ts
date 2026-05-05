@@ -63,10 +63,9 @@ export class NameService extends BaseService {
         take: 50,
         where: {
           gender: dto.gender,
-          count: LessThanOrEqual(lastName.count),
           id: MoreThan(lastName.id),
         },
-        order: { count: 'DESC', id: 'ASC' },
+        order: { id: 'ASC' },
       });
       return names;
     }
@@ -75,7 +74,7 @@ export class NameService extends BaseService {
       select: ['name', 'id'],
       take: 50,
       where: { gender: dto.gender },
-      order: { count: 'DESC', id: 'ASC' },
+      order: { id: 'ASC' },
     });
 
     return names;
