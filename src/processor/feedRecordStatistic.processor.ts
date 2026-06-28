@@ -1,5 +1,6 @@
 import { Processor, IProcessor } from '@midwayjs/bullmq';
 import { FeedRecordStatisticsService } from '../modules/baby/service/feedRecordStatistics.service';
+import { SubscribeMessageService } from '../modules/account/service/subscribeMessage.service';
 import { FORMAT, Inject } from '@midwayjs/core';
 import { useDate } from '@mid-vue/shared';
 
@@ -11,6 +12,10 @@ import { useDate } from '@mid-vue/shared';
 export class FeedRecordStatisticsProcessor implements IProcessor {
   @Inject()
   feedRecordStatisticsService: FeedRecordStatisticsService;
+
+  @Inject()
+  subscribeMessageService: SubscribeMessageService;
+
   async execute() {
     //获取昨天的日期
     const currDate = useDate().subtract(1, 'day');
@@ -28,6 +33,12 @@ export class FeedRecordStatisticsProcessor implements IProcessor {
         ...option,
         babyId,
       });
+    }
+
+    // 周一分支：下发上周周报订阅消息（复用本任务的聚合数据时机）
+    // useDate().day() === 1 表示周一（0=周日, 1=周一, ..., 6=周六）
+    if (useDate().day() === 1) {
+      await this.subscribeMessageService.sendWeeklyReports();
     }
   }
 }

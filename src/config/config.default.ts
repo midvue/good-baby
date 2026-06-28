@@ -87,5 +87,11 @@ export default (appInfo: MidwayAppInfo) => {
         baseURL: process.env['ANTHROPIC_BASE_URL'],
       },
     },
+    subscribe: {
+      /** 喂养提醒触发间隔（小时）；dev=0 立即触发，生产=3 正常提醒 */
+      feedReminderIntervalHour: Number(
+        process.env.SUBSCRIBE_FEED_INTERVAL_HOUR ?? 3
+      ),
+    },
   };
 };

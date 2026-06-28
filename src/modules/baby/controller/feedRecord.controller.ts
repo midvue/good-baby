@@ -14,6 +14,7 @@ import { BaseController } from '../../base/base.controller';
 import {
   FeedRecordCreateDTO,
   FeedRecordDaysDTO,
+  FeedRecordPageByDayDTO,
   FeedRecordPageDTO,
   FeedRecordUpdateDTO,
   LatestFeedRecordDto,
@@ -32,6 +33,14 @@ export class FeedRecordController extends BaseController {
   @ApiOperation({ summary: '分页获取列表' })
   async page(@Body() feedDto: FeedRecordPageDTO) {
     const res = await this.feedRecordService.page(feedDto);
+    return this.success(res);
+  }
+
+  @Post('/pageByDay')
+  @Validate()
+  @ApiOperation({ summary: '按天分页获取列表' })
+  async pageByDay(@Body() feedDto: FeedRecordPageByDayDTO) {
+    const res = await this.feedRecordService.pageByDay(feedDto);
     return this.success(res);
   }
 

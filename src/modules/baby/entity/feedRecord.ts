@@ -6,6 +6,7 @@ import { SnowIdBaseEntity } from '../../base/base.entity';
  */
 @Entity('baby_feed_record', { comment: '宝宝喂养记录' })
 @Index('uk_complex_time_baby', ['feedTime', 'babyId', 'feedType'])
+@Index('idx_baby_feed_time', ['babyId', 'feedTime'])
 export class FeedRecord extends SnowIdBaseEntity {
   @Column({ name: 'baby_id', comment: '宝宝id', length: 32 })
   babyId: string;

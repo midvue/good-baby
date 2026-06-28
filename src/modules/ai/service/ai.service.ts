@@ -131,7 +131,6 @@ export class AIService extends BaseService {
     });
 
     const textContent = (res.content[0] as Anthropic.TextBlock).text;
-    console.log('textContent:', textContent);
     const aiArr = JSON.parse(textContent) as ({
       name: string;
     } & Name['desc'])[];

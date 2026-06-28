@@ -23,3 +23,11 @@ export enum EnumFeedType {
   // /** 用药 */
   MEDICINE = 110,
 }
+
+/** 订阅授权状态 */
+export enum EnumSubscribeStatus {
+  /** 接收 */
+  ACCEPT = 'accept',
+  /** 拒收 */
+  REJECT = 'reject',
+}

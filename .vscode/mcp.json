@@ -1,0 +1,16 @@
+{
+  "servers": {
+    "MiniMax": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "minimax-coding-plan-mcp",
+        "-y"
+      ],
+      "env": {
+        "MINIMAX_API_KEY": "sk-cp-BG6aNtLArApiEKGaYh3rgkmLN7szzVPMqyPVTPqXOUTjoxu8OPhuhHq1ytERYrwXmZvcvLDE99ltnCAGSIkrxiWvg7sbxUTFNIDna0H3mks0zs4OfjNTW7E",
+        "MINIMAX_API_HOST": "https://api.minimaxi.com"
+      }
+    }
+  }
+}

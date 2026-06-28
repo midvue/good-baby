@@ -87,7 +87,7 @@ export class RedPacketService extends BaseService {
     // 再根据规则 查询当前用户 pointsRecord完成记录
     const list = await this.redPacketModel.find({
       where,
-      order: { id: 'DESC', recordTime: 'DESC' },
+      order: { recordTime: 'DESC' },
     });
     const count = list.reduce((sum, item) => sum + (item.amount || 0), 0);
     return { list, count };

@@ -1,20 +1,39 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 import { BaseEntity } from '../../base/base.entity';
 
-@Entity()
+/**
+ * 积分汇总表（每用户一行）
+ */
+@Entity('points_summary', { comment: '积分汇总表' })
 export class PointsSummary extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ comment: '用户ID' })
+  @Index('uk_user', { unique: true })
+  @Column({ comment: '用户ID', length: 32 })
   userId: string;
 
-  @Column({ comment: '统计日期，格式为 YYYY-MM-DD' })
-  date: string;
-
-  @Column({ comment: '积分总和', default: 0, name: 'total_points' })
+  @Column({
+    comment: '当前可用余额',
+    type: 'int',
+    default: 0,
+    name: 'total_points',
+  })
   totalPoints: number;
 
-  @Column({ comment: '今日积分', default: 0, name: 'today_points' })
-  todayPoints: number;
+  @Column({
+    comment: '累计获得积分',
+    type: 'int',
+    default: 0,
+    name: 'earned_points',
+  })
+  earnedPoints: number;
+
+  @Column({
+    comment: '累计消耗积分',
+    type: 'int',
+    default: 0,
+    name: 'consumed_points',
+  })
+  consumedPoints: number;
 }

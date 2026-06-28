@@ -2,8 +2,8 @@ import { Column, Entity } from 'typeorm';
 import { SnowIdBaseEntity } from '../../base/base.entity';
 
 @Entity({
-  comment: ' uterine_record',
-  name: '宫缩记录',
+  comment: '宫缩记录表',
+  name: 'uterine_record',
 })
 export class UterineRecord extends SnowIdBaseEntity {
   @Column({ comment: '用户ID' })

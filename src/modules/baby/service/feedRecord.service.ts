@@ -1,4 +1,4 @@
-import { minute, useDate } from '@mid-vue/shared';
+import { isEmptyValue, minute, useDate } from '@mid-vue/shared';
 import { Inject, Provide } from '@midwayjs/core';
 import { InjectEntityModel } from '@midwayjs/typeorm';
 import { Between, Repository } from 'typeorm';
@@ -7,12 +7,14 @@ import { BabyService } from './baby.service';
 import {
   FeedRecordCreateDTO,
   FeedRecordDaysDTO,
+  FeedRecordPageByDayDTO,
   FeedRecordPageDTO,
   FeedRecordUpdateDTO,
   LatestFeedRecordDto,
 } from '../dto/feedRecord.dto';
 import { FeedRecord } from '../entity/feedRecord';
 import { PointsRecordService } from '../../points/service/pointsRecord.service';
+import { EnumRuleCode } from '../../points/constants';
 
 @Provide()
 export class FeedRecordService extends BaseService {
@@ -77,6 +79,75 @@ export class FeedRecordService extends BaseService {
     });
 
     return list;
+  }
+
+  /**
+   * 按天分页查询喂养记录
+   * - 分页单位为"天",某一天的全部记录必定在同一页返回,不会被切断
+   * - count 语义为"总有记录的天数",非总记录数
+   * - 不做后端聚合,前端 formatSummary 遇到的都是完整的天,自然工作
+   * @param options 查询参数 (babyId 必填, feedType 可选)
+   */
+  async pageByDay(options: FeedRecordPageByDayDTO) {
+    const { babyId, feedType, current, size } = options;
+
+    // ① 查有记录的日期 (按天分页)
+    // 用 DATE_FORMAT 直接返回 'YYYY-MM-DD' 字符串,避免 Date 对象跨时区转换偏移
+    const dayQb = this.feedRecordModel
+      .createQueryBuilder('r')
+      .select("DISTINCT DATE_FORMAT(r.feedTime, '%Y-%m-%d')", 'feedDate')
+      .where('r.babyId = :babyId', { babyId });
+
+    if (!isEmptyValue(feedType)) {
+      dayQb.andWhere('r.feedType = :feedType', { feedType });
+    }
+
+    const dayRows = await dayQb
+      .orderBy('feedDate', 'DESC')
+      .skip((current - 1) * size)
+      .take(size)
+      .getRawMany();
+
+    // 无数据直接返回
+    if (dayRows.length === 0) {
+      return { list: [], count: 0 };
+    }
+
+    // ② 查这些天内的全部明细
+    // 用 BETWEEN 利用 (babyId, feedTime) 索引做范围扫描,
+    // 比 DATE_FORMAT(feedTime) IN (...) 快得多 (无需对每行计算函数)
+    // feedDate 已是 'YYYY-MM-DD' 字符串,拼接 00:00:00/23:59:59 后是合法的时间字面量
+    const dates = dayRows.map(r => r.feedDate);
+    const minDate = dates[dates.length - 1];
+    const maxDate = dates[0];
+
+    const listQb = this.feedRecordModel
+      .createQueryBuilder('r')
+      .where('r.babyId = :babyId', { babyId })
+      .andWhere('r.feedTime BETWEEN :start AND :end', {
+        start: `${minDate} 00:00:00`,
+        end: `${maxDate} 23:59:59`,
+      });
+
+    if (!isEmptyValue(feedType)) {
+      listQb.andWhere('r.feedType = :feedType', { feedType });
+    }
+
+    const list = await listQb.orderBy('r.feedTime', 'DESC').getMany();
+
+    // ③ 查总天数 (用于前端判断是否还有更多页)
+    const countQb = this.feedRecordModel
+      .createQueryBuilder('r')
+      .select("COUNT(DISTINCT DATE_FORMAT(r.feedTime, '%Y-%m-%d'))", 'cnt')
+      .where('r.babyId = :babyId', { babyId });
+
+    if (!isEmptyValue(feedType)) {
+      countQb.andWhere('r.feedType = :feedType', { feedType });
+    }
+
+    const { cnt } = await countQb.getRawOne();
+
+    return { list, count: Number(cnt) };
   }
 
   async days(options: FeedRecordDaysDTO) {
@@ -151,7 +222,11 @@ export class FeedRecordService extends BaseService {
     const { id } = await this.feedRecordModel.save(
       Object.assign(new FeedRecord(), inDto)
     );
-    // this.pointsRecordService.add(inDto.createId, 'add_daily_feed');
+    // 喂养记录创建后自动产生积分（AUTO类型，由规则配置limitPerDay控制上限）
+    // 积分异常不应影响主业务，catch 掉只记日志
+    this.pointsRecordService
+      .add(inDto.createId, EnumRuleCode.DAILY_FEED, { sourceId: id })
+      .catch(err => this.logger.error('积分奖励失败:', err.message));
     return { id };
   }
 
