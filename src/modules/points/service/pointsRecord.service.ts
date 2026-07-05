@@ -246,10 +246,7 @@ export class PointsRecordService extends BaseService {
       const existRecord = await this.pointsRecordModel.findOne({
         where: { userId, ruleCode },
       });
-      if (existRecord) {
-        // 一次性任务已完成，不再产生积分
-        return null;
-      }
+      if (existRecord) return null;
     }
 
     // ACTION 类型：检查每日上限（防止刷单）
@@ -268,9 +265,7 @@ export class PointsRecordService extends BaseService {
       const maxPerDay = rule.limitPerDay * rule.points;
 
       // 已达或即将超过上限则不再产生积分
-      if (todayEarned + rule.points > maxPerDay) {
-        return null;
-      }
+      if (todayEarned + rule.points > maxPerDay) return null;
     }
 
     // 根据触发方式决定状态

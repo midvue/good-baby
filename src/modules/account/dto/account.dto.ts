@@ -16,9 +16,14 @@ export class AccountDTO {
   })
   nickname: string;
 
-  @Rule(RuleType.string().allow('').empty(''))
+  @Rule(
+    RuleType.string()
+      .pattern(/^1[3-9]\d{9}$/)
+      .allow('')
+      .empty('')
+  )
   @ApiProperty({
-    example: 18122223333,
+    example: '18122223333',
     description: '手机号',
   })
   phone: string;
@@ -75,6 +80,24 @@ export class AccountUpdateDTO extends AccountDTO {
     description: '角色id',
   })
   id: string;
+
+  @Rule(RuleType.string().required())
+  @ApiProperty({
+    example: 'admin',
+    description: '昵称',
+  })
+  nickname: string;
+
+  @Rule(
+    RuleType.string()
+      .pattern(/^1[3-9]\d{9}$/)
+      .required()
+  )
+  @ApiProperty({
+    example: '18122223333',
+    description: '手机号',
+  })
+  phone: string;
 }
 
 export class AccountPageDTO extends AccountUpdateDTO {

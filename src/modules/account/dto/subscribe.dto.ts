@@ -13,10 +13,18 @@ export class SubscribeReportItemDTO {
 
   @Rule(
     RuleType.string()
-      .valid(EnumSubscribeStatus.ACCEPT, EnumSubscribeStatus.REJECT)
+      .valid(
+        EnumSubscribeStatus.ACCEPT,
+        EnumSubscribeStatus.REJECT,
+        EnumSubscribeStatus.BAN,
+        EnumSubscribeStatus.FILTER
+      )
       .required()
   )
-  @ApiProperty({ example: 'accept', description: '授权结果 accept|reject' })
+  @ApiProperty({
+    example: 'accept',
+    description: '授权结果 accept|reject|ban|filter',
+  })
   status: string;
 }
 

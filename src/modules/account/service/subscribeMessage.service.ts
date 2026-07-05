@@ -72,9 +72,6 @@ export class SubscribeMessageService extends BaseService {
     const endTime = now
       .subtract(intervalHour, 'hour')
       .format('YYYY-MM-DD HH:mm:ss');
-    this.logger.info(
-      `[feedReminder] 扫描窗口 interval=${intervalHour}h, [${startTime}, ${endTime}]`
-    );
 
     const records = await this.feedRecordModel.find({
       select: ['babyId'],
@@ -85,9 +82,6 @@ export class SubscribeMessageService extends BaseService {
       take: limit,
     });
     const babyIds = Array.from(new Set(records.map(r => r.babyId)));
-    this.logger.info(
-      `[feedReminder] 命中记录 ${records.length} 条，去重后宝宝 ${babyIds.length} 个`
-    );
 
     // 逐个宝宝处理（防重复在 processFeedReminder 内基于 lastSendTime < feedTime 判断）
     for (const babyId of babyIds) {

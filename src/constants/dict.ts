@@ -30,4 +30,8 @@ export enum EnumSubscribeStatus {
   ACCEPT = 'accept',
   /** 拒收 */
   REJECT = 'reject',
+  /** 已被禁止授权(用户在微信设置中关闭,后续无法再弹) */
+  BAN = 'ban',
+  /** 被规则过滤(已被下发过或命中频控) */
+  FILTER = 'filter',
 }

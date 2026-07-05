@@ -19,7 +19,9 @@ export default (appInfo: MidwayAppInfo) => {
         maxFiles: '3d',
         datePattern: 'YYYY-MM-DD.log',
         format: info => {
-          return `${info.timestamp} ${info.LEVEL} ${info.pid} ${info.labelText}${info.message}`;
+          return `${info.timestamp} ${info.LEVEL} ${info.pid} ${
+            info.labelText ?? ''
+          }${info.message}`;
         },
       },
       clients: {

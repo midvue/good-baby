@@ -12,6 +12,8 @@ import { Account } from '../entity/account';
 import { makeHttpRequest } from '@midwayjs/core';
 import { JwtService } from '@midwayjs/jwt';
 import { AccountBabyFamily } from '../../baby/entity/accountBabyFamily';
+import { PointsRecordService } from '../../points/service/pointsRecord.service';
+import { EnumRuleCode } from '../../points/constants';
 
 interface Code2sessionData {
   openid: string;
@@ -26,6 +28,8 @@ export class AccountService extends BaseService {
   accountBabyFamilyModel: Repository<AccountBabyFamily>;
   @Inject()
   jwtService: JwtService;
+  @Inject()
+  pointsRecordService: PointsRecordService;
 
   @Config('wx')
   wxConfig: { miniapp: { appid: string; secret: string } };
@@ -109,7 +113,11 @@ export class AccountService extends BaseService {
   }
 
   async update(upDto: AccountUpdateDTO) {
-    return await this.accountModel.update(upDto.id, upDto);
+    const res = await this.accountModel.update(upDto.id, upDto);
+    this.pointsRecordService
+      .add(upDto.id, EnumRuleCode.COMPLETE_PROFILE)
+      .catch(err => this.logger.error('完善资料积分奖励失败:', err.message));
+    return res;
   }
 
   async delete(id: string) {
