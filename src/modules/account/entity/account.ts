@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
-import { BaseEntity, SnowIdBaseEntity } from '../../base/base.entity';
+import { Entity, Column, Index } from 'typeorm';
+import { SnowIdBaseEntity } from '../../base/base.entity';
 
 /**
  * 用户端账号表

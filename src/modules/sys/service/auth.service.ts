@@ -3,6 +3,7 @@ import { JwtService } from '@midwayjs/jwt';
 import { BaseService } from '../../base/base.service';
 import { UserService } from '../service/user.service';
 import { UserCreateDTO } from '../dto/user.dto';
+import { verifyPassword } from '../utils/passwordHash';
 @Provide()
 export class AuthService extends BaseService {
   @Inject()
@@ -30,7 +31,7 @@ export class AuthService extends BaseService {
       throw new httpError.ForbiddenError('当前用户已经被禁用');
     }
 
-    if (dbPwd !== password) {
+    if (!(await verifyPassword(password, dbPwd))) {
       throw new httpError.ForbiddenError('您的密码错误');
     }
     const token = await this.jwtService.sign({ id });

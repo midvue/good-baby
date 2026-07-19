@@ -7,6 +7,7 @@ import { UserCreateDTO, UserPageDTO, UserUpdateDTO } from '../dto/user.dto';
 import { Role } from '../entity/role';
 import { User } from '../entity/user';
 import { UserRole } from '../entity/userRole';
+import { hashPassword } from '../utils/passwordHash';
 
 @Provide()
 export class UserService extends BaseService {
@@ -41,7 +42,6 @@ export class UserService extends BaseService {
         a.remark,
         a.gender,
         a.nickname,
-        a.password,
         a.dept_id AS deptId,
         a.create_time AS createTime,
         a.update_time AS updateTime,
@@ -110,6 +110,7 @@ export class UserService extends BaseService {
 
   async create(inDto: UserCreateDTO) {
     const { roleIds, ...user } = inDto;
+    user.password = await hashPassword(user.password);
 
     const dataSource = this.dataSourceMgr.getDataSource('default');
     const res = await dataSource.transaction(async transMgr => {
@@ -126,6 +127,11 @@ export class UserService extends BaseService {
 
   async update(dto: UserUpdateDTO) {
     const { roleIds, ...user } = dto;
+    if (user.password) {
+      user.password = await hashPassword(user.password);
+    } else {
+      delete user.password;
+    }
 
     //查询库里面绑定的roleIds
     const urIds = await this.userRoleModel

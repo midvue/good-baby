@@ -72,6 +72,13 @@ export class UserUpdateDTO extends UserDTO {
     description: '角色id',
   })
   id: number;
+
+  @Rule(RuleType.string().allow('').empty(''))
+  @ApiProperty({
+    example: '123456',
+    description: '密码',
+  })
+  password?: string;
 }
 
 export class UserPageDTO extends UserUpdateDTO {

@@ -16,7 +16,7 @@ export class User extends BaseEntity {
   @Column({ comment: '账号', length: 32 })
   account: string;
 
-  @Column({ comment: '密码', length: 36 })
+  @Column({ comment: '密码哈希', length: 128 })
   password: string;
 
   @Column({ comment: '昵称', length: 32 })
